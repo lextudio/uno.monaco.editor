@@ -18,8 +18,8 @@ namespace Monaco.Helpers
             _instances.Add(_owner, this);
 		}
 
-        [Preserve]
-        public static string NativeGetCurrentThemeName([JSMarshalAs<JSType.Any>] object managedOwner)
+        [JSExport]
+        public static string ManagedGetCurrentThemeName([JSMarshalAs<JSType.Any>] object managedOwner)
         {
             if (_instances.TryGetValue(managedOwner, out var logger))
             {
@@ -31,8 +31,8 @@ namespace Monaco.Helpers
             }
         }
 
-        [Preserve]
-        public static bool NativeGetIsHighContrast([JSMarshalAs<JSType.Any>] object managedOwner)
+        [JSExport]
+        public static bool ManagedGetIsHighContrast([JSMarshalAs<JSType.Any>] object managedOwner)
         {
             if (_instances.TryGetValue(managedOwner, out var logger))
             {

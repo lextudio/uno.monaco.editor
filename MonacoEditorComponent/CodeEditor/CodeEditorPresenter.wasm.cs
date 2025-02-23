@@ -36,6 +36,8 @@ namespace Monaco
 		/// <inheritdoc />
 		public event TypedEventHandler<ICodeEditorPresenter, WebViewNavigationCompletedEventArgs> NavigationCompleted; // ignored for now (only focus the editor)
 
+		public CodeEditor? ParentCodeEditor { get; set; }
+
 		/// <inheritdoc />
 		public global::System.Uri Source
 		{
@@ -85,8 +87,13 @@ namespace Monaco
         {
 			try
 			{
+				if(ParentCodeEditor is null)
+				{
+					throw new InvalidOperationException($"The ParentCodeEditor property must be set");
+				}
+
                 // await NativeMethods.InitializeMonaco(this, _element.ElementId, $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}");
-                await NativeMethods.InitializeMonaco(this, _element.ElementId, $"");
+                await NativeMethods.InitializeMonaco(ParentCodeEditor, _element.ElementId, $"");
             }
             catch (Exception e)
 			{

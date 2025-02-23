@@ -24,6 +24,11 @@
 		<UnoFeatures>
 			SkiaRenderer;
 		</UnoFeatures>
+
+		<UnoDisableHotDesign>true</UnoDisableHotDesign>
+		
+		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+
 	</PropertyGroup>
 
 	<ItemGroup>

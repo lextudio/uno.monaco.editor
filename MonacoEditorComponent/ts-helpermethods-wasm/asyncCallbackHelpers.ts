@@ -12,30 +12,32 @@ declare var nextReturn: number;
 nextReturn = 1;
 returnValueCallbackMap = {};
 
-const initializeMonacoEditor = (handle: string, element: any) => {
+const initializeMonacoEditor = (managedOwner: any, element: any) => {
     {
         console.debug("Grabbing Monaco Options");
 
         var opt = {}
     };
+
     try {
-        {
-            opt = getOptions(element);
-        }
+        opt = getOptions(element);
     }
     catch (err) {
-        {
-            console.debug("Unable to read options - " + err);
-        }
+        console.debug("Unable to read options - " + err);
     }
 
-    console.debug("Getting Parent Text value");
-    opt["value"] = getParentValue(element, "Text");
+    // console.debug("Getting Parent Text value");
+    // opt["value"] = getParentValue(element, "Text");
 
     console.debug("Getting Host container");
     console.debug("Creating Editor");
     const editor = monaco.editor.create(element, opt);
     var editorContext = EditorContext.registerEditorForElement(element, editor);
+
+    (<any>editorContext).Debug = new DebugLogger(managedOwner);
+    (<any>editorContext).Keyboard = new KeyboardListener(managedOwner);
+    (<any>editorContext).Accessor = new ParentAccessor(managedOwner);
+    (<any>editorContext).Theme = new ThemeListener(managedOwner);
 
     console.debug("Getting Editor model");
     editorContext.model = editor.getModel();
@@ -105,26 +107,54 @@ const initializeMonacoEditor = (handle: string, element: any) => {
 };
 
 class DebugLogger {
+    private _managedOwner: any;
+
+    constructor(managedOwner: any) {
+        this._managedOwner = managedOwner;
+    }
 
     public static async setup() {
     }
 }
 
 class KeyboardListener {
+    private _managedOwner: any;
 
-    public static async setup() {
+    constructor(managedOwner: any) {
+        this._managedOwner = managedOwner;
     }
-}
 
-class ParentAccessor {
 
     public static async setup() {
     }
 }
 
 class ThemeListener {
+    private _managedOwner: any;
+    private static _managedGetCurrentThemeName: (managedOwner: any) => string;
+    private static _managedGetIsHighContrast: (managedOwner: any) => boolean;
+
+    constructor(managedOwner: any) {
+        this._managedOwner = managedOwner;
+    }
 
     public static async setup() {
+        let anyModule = (<any>window).Module;
+
+        if (anyModule.getAssemblyExports !== undefined) {
+            const browserExports = await anyModule.getAssemblyExports("MonacoEditorComponent");
+
+            ThemeListener._managedGetCurrentThemeName = browserExports.Monaco.Helpers.ThemeListener.ManagedGetCurrentThemeName;
+            ThemeListener._managedGetIsHighContrast = browserExports.Monaco.Helpers.ThemeListener.ManagedGetIsHighContrast;
+        }
+    }
+
+    public getIsHighContrast(): boolean {
+        return ThemeListener._managedGetIsHighContrast(this._managedOwner);
+    }
+
+    public getCurrentThemeName(): string {
+        return ThemeListener._managedGetCurrentThemeName(this._managedOwner);
     }
 }
 
@@ -215,35 +245,22 @@ const desantize = (parameter: string): string => {
 
 const stringifyForMarshalling = (value: any): string => sanitize(value)
 
-const invokeWithReturnValue = (methodToInvoke: MethodWithReturnId): string => {
-    const nextId = nextReturn++;
-    methodToInvoke(nextId + '');
-    var json = returnValueCallbackMap[nextId];
-    //console.log('Return json ' + json);
-    json = desantize(json);
-    return json;
-}
-
 const getParentValue = (element:any, name: string): any => {
-    const jsonString = invokeWithReturnValue((returnId) => EditorContext.getEditorForElement(element).Accessor.getJsonValue(name, returnId));
-    const obj = JSON.parse(jsonString);
-    return obj;
+    return EditorContext.getEditorForElement(element).Accessor.getJsonValue(name);
 }
 
 const getParentJsonValue = (element: any, name: string): string =>
-    invokeWithReturnValue((returnId) => EditorContext.getEditorForElement(element).Accessor.getJsonValue(name, returnId))
+    EditorContext.getEditorForElement(element).Accessor.getJsonValue(name);
 
 const getThemeIsHighContrast = (element: any): boolean =>
-    invokeWithReturnValue((returnId) => EditorContext.getEditorForElement(element).Theme.getIsHighContrast(returnId)) == "true";
+    EditorContext.getEditorForElement(element).Theme.getIsHighContrast() == "true";
 
 const getThemeCurrentThemeName = (element: any): string =>
-    invokeWithReturnValue((returnId) => EditorContext.getEditorForElement(element).Theme.getCurrentThemeName(returnId));
-
+    EditorContext.getEditorForElement(element).Theme.getCurrentThemeName();
 
 const callParentEventAsync = (element: any, name: string, parameters: string[]): Promise<string> =>
     invokeAsyncMethod<string>(async (promiseId) => {
         let result = await EditorContext.getEditorForElement(element).Accessor.callEvent(name,
-            promiseId,
             parameters != null && parameters.length > 0 ? stringifyForMarshalling(parameters[0]) : null,
             parameters != null && parameters.length > 1 ? stringifyForMarshalling(parameters[1]) : null);
         if (result) {

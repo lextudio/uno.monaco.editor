@@ -1,3 +1,6 @@
+using Microsoft.UI.Text;
+using Uno.UI.Xaml.Media;
+
 namespace MonacoEditorTestApp;
 
 public class Program

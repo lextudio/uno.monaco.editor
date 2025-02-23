@@ -238,6 +238,8 @@ namespace Monaco
 
             if (_view != null)
             {
+                _view.ParentCodeEditor = this;
+
                 _view.NavigationStarting -= WebView_NavigationStarting;
                 _view.NavigationStarting += WebView_NavigationStarting;
                 _view.NavigationCompleted += WebView_NavigationCompleted;

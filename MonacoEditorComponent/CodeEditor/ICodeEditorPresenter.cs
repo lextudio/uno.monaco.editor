@@ -21,10 +21,11 @@ namespace Monaco
 
 		/// <summary>Occurs when the WebView has finished loading the current content or if navigation has failed.</summary>
 		event TypedEventHandler<ICodeEditorPresenter, WebViewNavigationCompletedEventArgs> NavigationCompleted;
+        public CodeEditor? ParentCodeEditor { get; set; }
 
-		/// <summary>Gets or sets the Uniform Resource Identifier (URI) source of the HTML content to display in the WebView control.</summary>
-		/// <returns>The Uniform Resource Identifier (URI) source of the HTML content to display in the WebView control.</returns>
-		global::System.Uri Source { get; set; }
+        /// <summary>Gets or sets the Uniform Resource Identifier (URI) source of the HTML content to display in the WebView control.</summary>
+        /// <returns>The Uniform Resource Identifier (URI) source of the HTML content to display in the WebView control.</returns>
+        global::System.Uri Source { get; set; }
 
 		CoreDispatcher Dispatcher { get; }
 

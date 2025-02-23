@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -15,15 +16,6 @@ partial class ParentAccessor
 
     partial void PartialCtor()
     {
-        //getValue(null);
-        //setValue(null, null);
-        //setValueWithType(null, null, null);
-        //getJsonValue(null,null);
-        //callAction(null);
-        //callActionWithParameters(null, null, null);
-        //callEvent(null, null, null, null);
-        //close();
-
         if (this.parent.TryGetTarget(out var target))
         {
             _instances.Add(target, this);
@@ -81,7 +73,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static string NativeGetJsonValue([JSMarshalAs<JSType.Any>] object managedOwner, string name, string returnId)
+    internal static string ManagedGetJsonValue([JSMarshalAs<JSType.Any>] object managedOwner, string name)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -95,7 +87,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static bool NativeCallAction([JSMarshalAs<JSType.Any>] object managedOwner, string name)
+    internal static bool ManagedCallAction([JSMarshalAs<JSType.Any>] object managedOwner, string name)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -110,7 +102,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static bool NativeCallActionWithParameters([JSMarshalAs<JSType.Any>] object managedOwner, string name, string parameter1, string parameter2)
+    internal static bool ManagedCallActionWithParameters([JSMarshalAs<JSType.Any>] object managedOwner, string name, string parameter1, string parameter2)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -146,7 +138,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    public static async Task<string> NativeCallEvent([JSMarshalAs<JSType.Any>] object managedOwner, string name, string promiseId, string parameter1, string parameter2)
+    public static async Task<string> ManagedCallEvent([JSMarshalAs<JSType.Any>] object managedOwner, string name, string promiseId, string parameter1, string parameter2)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -164,7 +156,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    public static void NativeClose([JSMarshalAs<JSType.Any>] object managedOwner)
+    public static void ManagedClose([JSMarshalAs<JSType.Any>] object managedOwner)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {

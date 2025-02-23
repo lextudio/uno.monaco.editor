@@ -24,7 +24,7 @@ public partial class App : Application
     {
         MainWindow = new Window();
 #if DEBUG
-        MainWindow.UseStudio();
+        // MainWindow.UseStudio();
 #endif
 
 
