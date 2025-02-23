@@ -71,7 +71,7 @@ const addCommand = function (element: any, keybindingStr, handlerName, context) 
                 objs.push(JSON.stringify(arguments[i]));
             }
         }
-        editorContext.Accessor.callActionWithParameters(handlerName, objs);
+        editorContext.Accessor.callActionWithParameters2(handlerName, objs);
     }, context);
 };
 

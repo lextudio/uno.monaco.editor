@@ -5,6 +5,8 @@
     private static _managedCallActionWithParameters: (managedOwner: any, name: string, parameters: string[]) => boolean;
     private static _managedCallEvent: (managedOwner: any, name: string, parameters: string[]) => Promise<string>;
     private static _managedClose: (managedOwner: any) => void;
+    private static _managedSetValue: (managedOwner: any, name: string, value: string) => void;
+    private static _managedSetValueWithType: (managedOwner: any, name: string, value: string, type: string) => void;
 
     constructor(managedOwner: any) {
         this._managedOwner = managedOwner;
@@ -21,6 +23,8 @@
             ParentAccessor._managedCallActionWithParameters = browserExports.Monaco.Helpers.ParentAccessor.ManagedCallActionWithParameters;
             ParentAccessor._managedCallEvent = browserExports.Monaco.Helpers.ParentAccessor.ManagedCallEvent;
             ParentAccessor._managedClose = browserExports.Monaco.Helpers.ParentAccessor.ManagedClose;
+            ParentAccessor._managedSetValue = browserExports.Monaco.Helpers.ParentAccessor.ManagedSetValue;
+            ParentAccessor._managedSetValueWithType = browserExports.Monaco.Helpers.ParentAccessor.ManagedSetValueWithType;
         }
     }
 
@@ -32,12 +36,12 @@
         return ParentAccessor._managedCallAction(this._managedOwner, name);
     }
 
-    public callActionWithParameters(name: string, parameters: string[]): boolean {
-        return ParentAccessor._managedCallActionWithParameters(this._managedOwner, name, parameters);
+    public callActionWithParameters(name: string, parameter1: string, parameter2: string): boolean {
+        return ParentAccessor._managedCallActionWithParameters(this._managedOwner, name, [parameter1, parameter2]);
     }
 
-    public async callEvent(name: string, parameters: string[]): Promise<string> {
-        return ParentAccessor._managedCallEvent(this._managedOwner, name, parameters);
+    public callActionWithParameters2(name: string, parameters: string[]): boolean {
+        return ParentAccessor._managedCallActionWithParameters(this._managedOwner, name, parameters);
     }
 
     public close(): void {
@@ -47,16 +51,18 @@
     //getChildValue(name: string, child: string): Promise<any>;
     //getJsonValue(name: string): Promise<string>;
     //getValue(name: string): Promise<any>;
-    public async setValue(name: string, value: any): Promise<void> {
-        console.log("setValue is not implemented")
+    public async setValue(name: string, value: string): Promise<void> {
+        ParentAccessor._managedSetValue(this._managedOwner, name, value);
     }
 
     public setValueWithType(name: string, value: string, type: string) {
-        console.log("setValueWithType is not implemented")
+        ParentAccessor._managedSetValueWithType(this._managedOwner, name, value, type);
     }
 
     //callActionWithParameters(name: string, parameter1: string, parameter2: string): boolean;
-    //callEvent(name: string, callbackMethod: string, parameter1: string, parameter2: string);
+    public callEvent(name: string, parameter1: string, parameter2: string) {
+        return ParentAccessor._managedCallEvent(this._managedOwner, name, [parameter1, parameter2]);
+    }
 }
 
 

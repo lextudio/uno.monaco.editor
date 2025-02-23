@@ -23,7 +23,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static void NativeSetValue([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value)
+    internal static void ManagedSetValue([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -42,7 +42,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static void NativeSetValueWithType([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value, string type)
+    internal static void ManagedSetValueWithType([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value, string type)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
@@ -138,7 +138,7 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    public static async Task<string> ManagedCallEvent([JSMarshalAs<JSType.Any>] object managedOwner, string name, string promiseId, string parameter1, string parameter2)
+    public static async Task<string> ManagedCallEvent([JSMarshalAs<JSType.Any>] object managedOwner, string name, string parameter1, string parameter2)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {

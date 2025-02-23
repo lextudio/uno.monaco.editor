@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Data.Json;
 using Microsoft.UI.Xaml.Controls;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Monaco.Extensions
 {
@@ -42,8 +43,8 @@ namespace Monaco.Extensions
             var fullscript = start + 
                 "\n} catch (err) { return JSON.stringify({ wv_internal_error: true, message: err.message, description: err.description, number: err.number, stack: err.stack }); }";
 
-            if (_view.Dispatcher.HasThreadAccess)
-            {
+            //if (_view.Dispatcher.HasThreadAccess)
+            //{
                 try
                 {
                     return await RunScriptHelperAsync<T>(_view, fullscript);
@@ -52,34 +53,26 @@ namespace Monaco.Extensions
                 {
                     throw new JavaScriptExecutionException(member, file, line, script, e);
                 }
-            }
-            else
-            {
-                return await _view.Dispatcher.RunTaskAsync(async () =>
-                {
-                    try
-                    {
-                        return await RunScriptHelperAsync<T>(_view, fullscript);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new JavaScriptExecutionException(member, file, line, script, e);
-                    }
-                });
-            }
+            //}
+            //else
+            //{
+            //    return await _view.Dispatcher.RunTaskAsync(async () =>
+            //    {
+            //        try
+            //        {
+            //            return await RunScriptHelperAsync<T>(_view, fullscript);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            throw new JavaScriptExecutionException(member, file, line, script, e);
+            //        }
+            //    });
+            //}
         }
 
         private static async Task<T> RunScriptHelperAsync<T>(ICodeEditorPresenter _view, string script)
-        {            
-            var returnstring = await _view.InvokeScriptAsync("eval", new string[] { script }) as string ?? "";
-
-            //if (JsonObject.TryParse(returnstring, out JsonObject result))
-            //{
-            //    if (result.ContainsKey("wv_internal_error") && result["wv_internal_error"].ValueType == JsonValueType.Boolean && result["wv_internal_error"].GetBoolean())
-            //    {
-            //        throw new JavaScriptInnerException(result["message"].GetString(), result["stack"].GetString());
-            //    }
-            //}
+        {
+            var returnstring = NativeMethods.InvokeJS(script);
 
             // TODO: Need to decode the error correctly
             if (returnstring.Contains("wv_internal_error"))
@@ -219,5 +212,11 @@ namespace Monaco.Extensions
         {
             JavaScriptStackTrace = stack;
         }
+    }
+
+    internal partial class NativeMethods
+    {
+        [JSImport("globalThis.InvokeJS")]
+        public static partial string InvokeJS(string script);
     }
 }

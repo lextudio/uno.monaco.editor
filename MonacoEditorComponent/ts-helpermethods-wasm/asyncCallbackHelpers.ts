@@ -19,12 +19,12 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
         var opt = {}
     };
 
-    try {
-        opt = getOptions(element);
-    }
-    catch (err) {
-        console.debug("Unable to read options - " + err);
-    }
+    //try {
+    //    opt = getOptions(element);
+    //}
+    //catch (err) {
+    //    console.debug("Unable to read options - " + err);
+    //}
 
     // console.debug("Getting Parent Text value");
     // opt["value"] = getParentValue(element, "Text");
@@ -278,3 +278,9 @@ const callParentActionWithParameters = (element: any, name: string, parameters: 
     EditorContext.getEditorForElement(element).Accessor.callActionWithParameters(name,
         parameters != null && parameters.length > 0 ? stringifyForMarshalling(parameters[0]) : null,
         parameters != null && parameters.length > 1 ? stringifyForMarshalling(parameters[1]) : null);
+
+const InvokeJS = (command: string): string => {
+    // Preseve the original emscripten marshalling semantics
+    // to always return a valid string.
+    return String(eval(command) || "");
+}

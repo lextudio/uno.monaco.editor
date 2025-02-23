@@ -29,6 +29,8 @@
 		
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
 
+		<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -43,4 +45,11 @@
 		<ProjectReference Include="..\MonacoEditorComponent\MonacoEditorComponent.csproj" />
 	</ItemGroup>
 
+	<Target Name="AdjustStrip" BeforeTargets="_WasmCommonPrepareForWasmBuildNative">
+		<PropertyGroup>
+			<!-- Enable debug symbols for release mode to profiling -->
+			<WasmNativeStrip>false</WasmNativeStrip>
+			<WasmNativeDebugSymbols>true</WasmNativeDebugSymbols>
+		</PropertyGroup>
+	</Target>
 </Project>
