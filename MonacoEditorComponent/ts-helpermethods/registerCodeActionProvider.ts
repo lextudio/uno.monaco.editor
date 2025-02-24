@@ -4,11 +4,10 @@ function isTextEdit(edit: monaco.languages.WorkspaceTextEdit | monaco.languages.
     return (edit as monaco.languages.WorkspaceTextEdit).edit !== undefined;
 }
 
-const registerCodeActionProvider = function (element: any, languageId) {
-    var editorContext = EditorContext.getEditorForElement(element);
-
+const registerCodeActionProvider = function (unused: any, languageId) {
     return monaco.languages.registerCodeActionProvider(languageId, {
         provideCodeActions: function (model, range, context, token) {
+            var element = EditorContext.getElementFromModel(model);
             return callParentEventAsync(element, "ProvideCodeActions" + languageId, [JSON.stringify(range), JSON.stringify(context)]).then(result => {
                 if (result) {
                     const list: monaco.languages.CodeActionList = JSON.parse(result);

@@ -1,10 +1,9 @@
 ﻿///<reference path="../monaco-editor/monaco.d.ts" />
 
-const registerCodeLensProvider = function (element: any, languageId) {
-    var editorContext = EditorContext.getEditorForElement(element);
-
+const registerCodeLensProvider = function (unused: any, languageId) {
     return monaco.languages.registerCodeLensProvider(languageId, {
         provideCodeLenses: function (model, token) {
+            var element = EditorContext.getElementFromModel(model);
             return callParentEventAsync(element, "ProvideCodeLenses" + languageId, []).then(result => {
                 if (result) {
                     const list: monaco.languages.CodeLensList = JSON.parse(result);
@@ -19,6 +18,7 @@ const registerCodeLensProvider = function (element: any, languageId) {
             });
         },
         resolveCodeLens: function (model, codeLens, token) {
+            var element = EditorContext.getElementFromModel(model);
             return callParentEventAsync(element, "ResolveCodeLens" + languageId, [JSON.stringify(codeLens)]).then(result => {
                 if (result) {
                     return JSON.parse(result);

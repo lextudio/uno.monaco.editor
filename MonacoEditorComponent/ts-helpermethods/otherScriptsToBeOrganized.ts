@@ -46,11 +46,11 @@ class EditorContext {
     public modifingSelection: boolean; // Supress updates to selection when making edits.
 }
 
-const registerHoverProvider = function (element: any, languageId: string) {
-    var editorContext = EditorContext.getEditorForElement(element);
+const registerHoverProvider = function (unused: any, languageId: string) {
 
     return monaco.languages.registerHoverProvider(languageId, {
         provideHover: function (model, position) {
+            var element = EditorContext.getElementFromModel(model);
             return callParentEventAsync(element, "HoverProvider" + languageId, [JSON.stringify(position)]).then(result => {
                 if (result) {
                     return JSON.parse(result);

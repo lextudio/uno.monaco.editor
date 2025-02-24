@@ -102,14 +102,14 @@ partial class ParentAccessor
     }
 
     [JSExport]
-    internal static bool ManagedCallActionWithParameters([JSMarshalAs<JSType.Any>] object managedOwner, string name, string parameter1, string parameter2)
+    internal static bool ManagedCallActionWithParameters([JSMarshalAs<JSType.Any>] object managedOwner, string name, string[] parameters)
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
             //System.Diagnostics.Debug.WriteLine($"Calling action {name}");
 
-            var parameters = new[] { Desanitize(parameter1) ?? "", Desanitize(parameter2) ?? "" }.ToArray();
-            var result = logger.CallActionWithParameters(name, parameters);
+            var sanitizedParameters = parameters.Select(p => Desanitize(p) ?? "").ToArray();
+            var result = logger.CallActionWithParameters(name, sanitizedParameters);
 
             return result;
         }
@@ -142,8 +142,7 @@ partial class ParentAccessor
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
-            Console.WriteLine($"ManagedCallEvent({managedOwner}/{managedOwner.GetHashCode():x8}, {name}, {string.Join(", ", parameters)}");
-            var resultString = await logger.CallEvent(name, parameters.Where(p => p is not null).ToArray());
+            var resultString = await logger.CallEvent(name, parameters.Select(s => Desanitize(s) ?? "").Where(p => p is not null).ToArray());
             return Desanitize(resultString);
         }
         else

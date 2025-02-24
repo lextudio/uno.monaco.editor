@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.WinUI;
 using Monaco.Editor;
+using Monaco.Extensions;
 using Monaco.Helpers;
 using Newtonsoft.Json;
 using System;
@@ -115,10 +116,15 @@ namespace Monaco
         /// </summary>
         /// <param name="script">Script to invoke</param>
         /// <returns>An async operation result to string</returns>
-        public async Task<string> InvokeScriptAsync(string script)
+        public async Task<string?> InvokeScriptAsync(string script)
         {
-            throw new InvalidOperationException("InvokeScriptAsync failed");
-            // return _view.InvokeScriptAsync("eval", new[] { script });
+            if (_view is not null)
+            {
+                var r = await _view.InvokeScriptAsync("eval", [script]);
+                return r?.ToString();
+            }
+
+            return null;
         }
 
         private int _commandIndex = 0;

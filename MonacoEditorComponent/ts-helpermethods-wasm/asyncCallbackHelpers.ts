@@ -49,7 +49,6 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
         {
             if (!editorContext.modifingSelection) {
                 {
-                    console.log(event.source);
                     editorContext.Accessor.setValue("SelectedText", stringifyForMarshalling(editorContext.model.getValueInRange(event.selection)));
                     editorContext.Accessor.setValueWithType("SelectedRange", stringifyForMarshalling(JSON.stringify(event.selection)), "Selection");
                 }
@@ -226,11 +225,9 @@ const callParentEventAsync = async (element: any, name: string, parameters: stri
         parameters != null && parameters.length > 1 ? stringifyForMarshalling(parameters[1]) : null);
 
     if (result) {
-        console.log('Parent event result: ' + name + ' -  ' +  result);
         result = desantize(result);
-        console.log('Desanitized: ' + name + ' -  ' + result);
     } else {
-        console.log('No Parent event result for ' + name);
+        // console.debug('No Parent event result for ' + name);
     }
 
     return result;
@@ -249,4 +246,8 @@ globalThis.InvokeJS = (elementId: string, command: string): string => {
     var r2 = JSON.stringify(r);
 
     return r2;
+}
+
+globalThis.refreshLayout = (elementId: string) => {
+    EditorContext.getEditorForElement(document.getElementById(elementId)).editor.layout();
 }

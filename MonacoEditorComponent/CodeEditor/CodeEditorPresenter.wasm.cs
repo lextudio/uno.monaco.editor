@@ -25,6 +25,8 @@ namespace Monaco
         {
             Console.WriteLine("CodeEditorPresenter()");
             Content = _element = BrowserHtmlElement.CreateHtmlElement("monaco-" + this.GetHashCode(), "div");
+
+			LayoutUpdated += (s, e) => NativeMethods.RefreshLayout(_element.ElementId);
         }
 
 		public string ElementId => _element.ElementId;
@@ -113,6 +115,9 @@ namespace Monaco
 
             [JSImport("globalThis.createMonacoEditor")]
             public static partial Task InitializeMonaco([JSMarshalAs<JSType.Any>] object managedOwner, string elementId, string baseUri);
+
+			[JSImport("globalThis.refreshLayout")]
+            public static partial void RefreshLayout(string elementId);
         }
     }
 }

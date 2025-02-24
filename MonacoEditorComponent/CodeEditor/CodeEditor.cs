@@ -125,7 +125,7 @@ namespace Monaco
             {
                 if (ReadOnly != options.ReadOnly) options.ReadOnly = ReadOnly;
             }
-            await InvokeScriptAsync("updateMonacoOptions", options);
+            await InvokeScriptAsync("updateOptions", options);
         }
 
         private void CodeEditor_SizeChanged(object sender, RoutedEventArgs e)
