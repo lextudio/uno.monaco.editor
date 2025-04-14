@@ -239,13 +239,8 @@ const callParentActionWithParameters = (element: any, name: string, parameters: 
         parameters != null && parameters.length > 1 ? stringifyForMarshalling(parameters[1]) : null);
 
 globalThis.InvokeJS = (elementId: string, command: string): string => {
-    // Preseve the original emscripten marshalling semantics
-    // to always return a valid string.
     var r = eval(`var element = globalThis.document.getElementById(\"${elementId}\"); ${command}`) || "";
-
-    var r2 = JSON.stringify(r);
-
-    return r2;
+    return JSON.stringify(r);
 }
 
 globalThis.refreshLayout = (elementId: string) => {
