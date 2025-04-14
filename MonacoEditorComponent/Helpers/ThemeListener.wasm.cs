@@ -21,9 +21,9 @@ namespace Monaco.Helpers
         [JSExport]
         public static string ManagedGetCurrentThemeName([JSMarshalAs<JSType.Any>] object managedOwner)
         {
-            if (_instances.TryGetValue(managedOwner, out var logger))
+            if (_instances.TryGetValue(managedOwner, out var listener))
             {
-                return logger.CurrentThemeName;
+                return listener.CurrentThemeName;
             }
             else
             {
@@ -34,9 +34,9 @@ namespace Monaco.Helpers
         [JSExport]
         public static bool ManagedGetIsHighContrast([JSMarshalAs<JSType.Any>] object managedOwner)
         {
-            if (_instances.TryGetValue(managedOwner, out var logger))
+            if (_instances.TryGetValue(managedOwner, out var listener))
             {
-                return logger.IsHighContrast;
+                return listener.IsHighContrast;
             }
             else
             {

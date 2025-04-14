@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Monaco.Extensions;
+using Monaco.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
-using Uno.Extensions;
-using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
+using Windows.Foundation;
+using Windows.Media.Playback;
+using Windows.UI.Core;
 
 namespace Monaco
 {
@@ -42,8 +45,23 @@ namespace Monaco
 
 		public CodeEditor? ParentCodeEditor { get; set; }
 
-		/// <inheritdoc />
-		public global::System.Uri Source
+		public bool IsSettingValue
+		{
+			get => ParentCodeEditor?.IsSettingValue ?? false;
+			set
+			{
+				if (ParentCodeEditor is not null)
+				{
+					ParentCodeEditor.IsSettingValue = value;
+				}
+			}
+		}
+
+        public bool TriggerKeyDown(WebKeyEventArgs args) 
+			=> ParentCodeEditor?.TriggerKeyDown(args) ?? false;
+
+        /// <inheritdoc />
+        public global::System.Uri Source
 		{
 			get => new global::System.Uri(NativeMethods.GetSrc(_element.ElementId));
 			set
@@ -96,8 +114,8 @@ namespace Monaco
 					throw new InvalidOperationException($"The ParentCodeEditor property must be set");
 				}
 
-                // await NativeMethods.InitializeMonaco(this, _element.ElementId, $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}");
-                await NativeMethods.InitializeMonaco(ParentCodeEditor, _element.ElementId, $"");
+				Console.WriteLine($"InitializeMonaco({this.GetHashCode():X8})");
+                await NativeMethods.InitializeMonaco(this, _element.ElementId, $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}");
             }
             catch (Exception e)
 			{

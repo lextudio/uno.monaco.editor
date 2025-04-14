@@ -10,7 +10,7 @@ namespace Monaco.Helpers
 	{
         private static ConditionalWeakTable<object, DebugLogger> _instances = new();
 
-        public DebugLogger(CodeEditor codeEditor)
+        public DebugLogger(ICodeEditorPresenter codeEditor)
 		{
             _instances.Add(codeEditor, this);
 
@@ -20,7 +20,7 @@ namespace Monaco.Helpers
         [JSExport]
         public static void NativeLog([JSMarshalAs<JSType.Any>] object managedOwner, string message)
         {
-            if(_instances.TryGetValue(managedOwner, out var logger))
+            if (_instances.TryGetValue(managedOwner, out var logger))
             {
                 logger.Log(message);
             }

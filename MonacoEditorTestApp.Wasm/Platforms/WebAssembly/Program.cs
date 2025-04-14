@@ -11,7 +11,7 @@ public class Program
     {
         App.InitializeLogging();
 
-        var host = new global::Uno.UI.Runtime.Skia.WebAssembly.Browser.PlatformHost(() => _app = new App());
+        var host = new global::Uno.UI.Runtime.Skia.WebAssembly.Browser.WebAssemblyBrowserHost(() => _app = new App());
         await host.Run();
 
         return 0;

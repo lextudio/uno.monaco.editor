@@ -1,6 +1,6 @@
 ﻿public class Program { // http://www.github.com/
 	public static void Main(string[] args) {
-		Console.WriteLine(\"Hello, World!\");
+		Console.WriteLine("Hello, World!");
 	}
 
 	/*

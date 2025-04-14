@@ -86,7 +86,7 @@ namespace Monaco
             #pragma warning restore CS0618 // Type or member is obsolete
             _cssBroker = new CssStyleBroker(this);
 
-            base.Loaded += CodeEditor_Loaded;
+            Loaded += CodeEditor_Loaded;
             SizeChanged += CodeEditor_SizeChanged;
             Unloaded += CodeEditor_Unloaded;
 
@@ -137,8 +137,6 @@ namespace Monaco
 
         private void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("CodeEditor_Loaded");
-
 #if __WASM__
             LoadedPartial();
 #endif
@@ -177,8 +175,6 @@ namespace Monaco
                 Debug.WriteLine("Setting initialized - true");
                 _initialized = true;
 
-                Loading?.Invoke(this, new RoutedEventArgs());
-
                 Unloaded -= CodeEditor_Unloaded;
                 Unloaded += CodeEditor_Unloaded;
 
@@ -186,8 +182,6 @@ namespace Monaco
                 {
                     Window.Current.SizeChanged += OnWindowSizeChanged;
                 }
-
-                Loaded?.Invoke(this, new RoutedEventArgs());
             }
         }
 

@@ -29,20 +29,20 @@ namespace Monaco.Helpers
     public sealed partial class KeyboardListener
     {
         private static ConditionalWeakTable<object, KeyboardListener> _instances = new();
-        private readonly WeakReference<CodeEditor> parent;
+        private readonly WeakReference<ICodeEditorPresenter> parent;
         private readonly DispatcherQueue _queue;
 
-        public KeyboardListener(CodeEditor parent, DispatcherQueue queue)
+        public KeyboardListener(ICodeEditorPresenter parent, DispatcherQueue queue)
         {
-            this.parent = new WeakReference<CodeEditor>(parent);
+            this.parent = new WeakReference<ICodeEditorPresenter>(parent);
             _queue = queue;
 
             _instances.Add(parent, this);
 
-            PartialCtor();
+            PartialCtor(parent);
         }
 
-        partial void PartialCtor();
+        partial void PartialCtor(ICodeEditorPresenter parent);
 
         /// <summary>
         /// Called from JavaScript, returns if event was handled or not.

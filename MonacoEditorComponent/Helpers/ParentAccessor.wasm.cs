@@ -14,18 +14,17 @@ partial class ParentAccessor
 {
     private static ConditionalWeakTable<object, ParentAccessor> _instances = new();
 
-    partial void PartialCtor()
+    partial void PartialCtor(ICodeEditorPresenter parent)
     {
-        if (this.parent.TryGetTarget(out var target))
-        {
-            _instances.Add(target, this);
-        }
+        _instances.Add(parent, this);
+
+        Console.WriteLine($"ParentAccessor ctor {parent.GetType()}/{parent.GetHashCode():X8}");
     }
 
     [JSExport]
     internal static void ManagedSetValue([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value)
     {
-        if (_instances.TryGetValue(managedOwner, out var logger))
+        if (_instances.TryGetValue(managedOwner, out var parentAccessor))
         {
             var json = Desanitize(value) ?? "";
             json = json.Replace(@"\\",@"\");
@@ -33,18 +32,18 @@ partial class ParentAccessor
             json = json.Replace(@"\r\n", Environment.NewLine);
             json = json.Replace(@"\t", "\t");
             System.Diagnostics.Debug.WriteLine($"Trimmed: {json}");
-            _ = logger.SetValue(name, value);
+            _ = parentAccessor.SetValue(name, value);
         }
         else
         {
-            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner}");
+            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner?.GetType()}/{managedOwner?.GetHashCode():X8}");
         }
     }
 
     [JSExport]
     internal static void ManagedSetValueWithType([JSMarshalAs<JSType.Any>] object managedOwner, string name, string value, string type)
     {
-        if (_instances.TryGetValue(managedOwner, out var logger))
+        if (_instances.TryGetValue(managedOwner, out var parentAccessor))
         {
             var json = Desanitize(value) ?? "";
             json = json.Replace(@"\\", @"\");
@@ -52,11 +51,11 @@ partial class ParentAccessor
             json = json.Replace(@"\r\n", Environment.NewLine);
             json = json.Replace(@"\t", "\t");
             System.Diagnostics.Debug.WriteLine($"Trimmed: {json}");
-            _ = logger.SetValue(name, json, type);
+            _ = parentAccessor.SetValue(name, json, type);
         }
         else
         {
-            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner}");
+            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner?.GetType()}/{managedOwner?.GetHashCode():X8}");
         }
     }
 
@@ -75,14 +74,14 @@ partial class ParentAccessor
     [JSExport]
     internal static string ManagedGetJsonValue([JSMarshalAs<JSType.Any>] object managedOwner, string name)
     {
-        if (_instances.TryGetValue(managedOwner, out var logger))
+        if (_instances.TryGetValue(managedOwner, out var parentAccessor))
         {
-            var json = logger.GetJsonValue(name);
+            var json = parentAccessor.GetJsonValue(name);
             return Santize(json) ?? "";
         }
         else
         {
-            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner}");
+            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner?.GetType()}/{managedOwner?.GetHashCode():X8}");
         }
     }
 
@@ -104,18 +103,18 @@ partial class ParentAccessor
     [JSExport]
     internal static bool ManagedCallActionWithParameters([JSMarshalAs<JSType.Any>] object managedOwner, string name, string[] parameters)
     {
-        if (_instances.TryGetValue(managedOwner, out var logger))
+        if (_instances.TryGetValue(managedOwner, out var parentAccessor))
         {
             //System.Diagnostics.Debug.WriteLine($"Calling action {name}");
 
             var sanitizedParameters = parameters.Select(p => Desanitize(p) ?? "").ToArray();
-            var result = logger.CallActionWithParameters(name, sanitizedParameters);
+            var result = parentAccessor.CallActionWithParameters(name, sanitizedParameters);
 
             return result;
         }
         else
         {
-            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner}");
+            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner?.GetType()}/{managedOwner?.GetHashCode():X8}");
         }
     }
 
@@ -147,7 +146,7 @@ partial class ParentAccessor
         }
         else
         {
-            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner}");
+            throw new InvalidOperationException($"ParentAccessor not found for owner {managedOwner?.GetHashCode():X8}");
         }
     }
 

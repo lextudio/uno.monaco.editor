@@ -37,11 +37,11 @@ namespace MonacoEditorTestApp
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var tabItem = new TabViewItem();
-            tabItem.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
-            tabItem.Header = "Original item";
-            tabItem.Content = new EditorControl();
-            editors.TabItems.Add(tabItem);
+            //var tabItem = new TabViewItem();
+            //tabItem.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
+            //tabItem.Header = "Original item";
+            //tabItem.Content = new EditorControl();
+            //editors.TabItems.Add(tabItem);
         }
 
         private void TabView_AddTabButtonClick(TabView sender, object args)

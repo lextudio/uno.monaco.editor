@@ -19,7 +19,7 @@ namespace Monaco.Helpers
     [AllowForWeb]
     public sealed partial class ParentAccessor : IDisposable
     {
-        private readonly WeakReference<IParentAccessorAcceptor> parent;
+        private readonly WeakReference<ICodeEditorPresenter> parent;
         private readonly Type typeinfo;
         private readonly DispatcherQueue _queue;
         private Dictionary<string, Action>? actions;
@@ -32,20 +32,20 @@ namespace Monaco.Helpers
         /// Constructs a new reflective parent Accessor for the provided object.
         /// </summary>
         /// <param name="parent">Object to provide Property Access.</param>
-        public ParentAccessor(IParentAccessorAcceptor parent, DispatcherQueue queue)
+        public ParentAccessor(ICodeEditorPresenter parent, DispatcherQueue queue)
         {
             _queue = queue;
 
-            this.parent = new WeakReference<IParentAccessorAcceptor>(parent);
+            this.parent = new WeakReference<ICodeEditorPresenter>(parent);
             typeinfo = parent.GetType();
             actions = [];
             action_parameters = [];
             events = [];
 
-            PartialCtor();
+            PartialCtor(parent);
         }
 
-        partial void PartialCtor();
+        partial void PartialCtor(ICodeEditorPresenter parent);
 
         /// <summary>
         /// Registers an action from the .NET side which can be called from within the JavaScript code.

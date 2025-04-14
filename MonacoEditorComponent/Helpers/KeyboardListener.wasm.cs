@@ -7,7 +7,7 @@ namespace Monaco.Helpers
 {
 	partial class KeyboardListener
     {
-        partial void PartialCtor()
+        partial void PartialCtor(ICodeEditorPresenter parent)
 		{
 
 		}

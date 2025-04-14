@@ -20,12 +20,12 @@ namespace Monaco
         /// <summary>
         /// When Editor is Loading, it is ready to receive commands to the Monaco Engine.
         /// </summary>
-        public new event RoutedEventHandler? Loading;
+        public event RoutedEventHandler? EditorLoading;
 
         /// <summary>
         /// When Editor is Loaded, it has been rendered and is ready to be displayed.
         /// </summary>
-        public new event RoutedEventHandler? Loaded;
+        public event RoutedEventHandler? EditorLoaded;
 
         /// <summary>
         /// Called when a link is Ctrl+Clicked on in the editor, set Handled to true to prevent opening.
@@ -80,7 +80,7 @@ namespace Monaco
                 _view?.Focus(FocusState.Programmatic);
             }
 
-            Loaded?.Invoke(this, new RoutedEventArgs());
+            EditorLoaded?.Invoke(this, new RoutedEventArgs());
         }
 
         internal ParentAccessor? _parentAccessor;
@@ -102,16 +102,21 @@ namespace Monaco
             {
                 _queue = _queue ?? throw new InvalidOperationException("DispatcherQueue not set");
 
-                _parentAccessor = new ParentAccessor(this, _queue);
+                if(_view == null)
+                {
+                    throw new InvalidOperationException("Unable to find CodeEditorPresenter");
+                }
+
+                _parentAccessor = new ParentAccessor(_view, _queue);
                 _parentAccessor.AddAssemblyForTypeLookup(typeof(Range).GetTypeInfo().Assembly);
                 _parentAccessor.RegisterAction("Loaded", CodeEditorLoaded);
 
-                _themeListener = new ThemeListener(this);
+                _themeListener = new ThemeListener(_view);
                 _themeListener.ThemeChanged += ThemeListener_ThemeChanged;
                 _themeToken = RegisterPropertyChangedCallback(RequestedThemeProperty, RequestedTheme_PropertyChanged);
 
-                _keyboardListener = new KeyboardListener(this, _queue);
-                _debugLogger = new DebugLogger(this);
+                _keyboardListener = new KeyboardListener(_view, _queue);
+                _debugLogger = new DebugLogger(_view);
 
                 Debug.WriteLine($"InitialiseWebObjects - Completed");
             }
@@ -134,7 +139,7 @@ namespace Monaco
             }
 
             // Now we're done loading
-            Loading?.Invoke(this, new RoutedEventArgs());
+            EditorLoading?.Invoke(this, new RoutedEventArgs());
 
             // Make sure inner editor is focused
             await SendScriptAsync("EditorContext.getEditorForElement(element).editor.focus();");
@@ -155,7 +160,7 @@ namespace Monaco
 
             IsEditorLoaded = true;
 
-            Loaded?.Invoke(this, new RoutedEventArgs());
+            EditorLoaded?.Invoke(this, new RoutedEventArgs());
 
 #if __WASM__
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => WebView_NavigationCompleted(_view, null));

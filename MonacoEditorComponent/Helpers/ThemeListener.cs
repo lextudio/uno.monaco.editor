@@ -19,7 +19,7 @@ namespace Monaco.Helpers
     public sealed partial class ThemeListener // This is a copy of the Toolkit ThemeListener, for some reason if we try and use it directly it's not read by the WebView
     {
         private readonly DispatcherQueue _queue;
-        private readonly CodeEditor _owner;
+        private readonly ICodeEditorPresenter _owner;
 
         public string CurrentThemeName { get { return CurrentTheme.ToString(); } } // For Web Retrieval
 
@@ -31,12 +31,12 @@ namespace Monaco.Helpers
         private readonly AccessibilitySettings _accessible = new AccessibilitySettings();
         private readonly UISettings _settings = new UISettings();
 
-        public ThemeListener(CodeEditor codeEditor) : this(codeEditor, null) { }
+        public ThemeListener(ICodeEditorPresenter presenter) : this(presenter, null) { }
 
-        public ThemeListener(CodeEditor codeEditor, DispatcherQueue? queue)
+        public ThemeListener(ICodeEditorPresenter presenter, DispatcherQueue? queue)
         {
             _queue = queue ?? DispatcherQueue.GetForCurrentThread();
-            _owner = codeEditor;
+            _owner = presenter;
 
             CurrentTheme = Application.Current.RequestedTheme;
 #if !__WASM__

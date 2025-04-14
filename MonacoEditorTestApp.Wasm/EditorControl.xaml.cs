@@ -78,12 +78,18 @@ namespace MonacoEditorTestApp
         {
             InitializeComponent();
             options = Editor.Options;
-            Editor.Loading += Editor_Loading;
-            Editor.Loaded += Editor_Loaded;
+            Editor.EditorLoading += Editor_Loading;
+            Editor.EditorLoaded += Editor_Loaded;
+            Editor.Unloaded += Editor_Unloaded;
             Editor.OpenLinkRequested += Editor_OpenLinkRequest;
 
             Editor.InternalException += Editor_InternalException;
             Editor.PropertyChanged += Editor_PropertyChanged;
+        }
+
+        private void Editor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Editor_Unloaded");
         }
 
         private void Editor_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -452,8 +458,8 @@ namespace MonacoEditorTestApp
                     _myCondition = null;
                     Editor.KeyDown -= Editor_KeyDown;
 
-                    Editor.Loaded -= Editor_Loaded;
-                    Editor.Loading -= Editor_Loading;
+                    Editor.EditorLoaded -= Editor_Loaded;
+                    Editor.EditorLoading -= Editor_Loading;
                     Editor.OpenLinkRequested -= Editor_OpenLinkRequest;
                     Editor.InternalException -= Editor_InternalException;
 
@@ -477,8 +483,8 @@ namespace MonacoEditorTestApp
 
                     Editor.KeyDown += Editor_KeyDown;
 
-                    Editor.Loading += Editor_Loading;
-                    Editor.Loaded += Editor_Loaded;
+                    Editor.EditorLoading += Editor_Loading;
+                    Editor.EditorLoaded += Editor_Loaded;
                     Editor.OpenLinkRequested += Editor_OpenLinkRequest;
                     Editor.InternalException += Editor_InternalException;
 

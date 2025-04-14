@@ -13,7 +13,7 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 		<!-- Package Publisher -->
-		<ApplicationPublisher>JérômeLaban</ApplicationPublisher>
+		<ApplicationPublisher>unoplatform</ApplicationPublisher>
 		<!-- Package Description -->
 		<Description>MonacoEditorTestApp powered by Uno Platform.</Description>
 
@@ -30,7 +30,6 @@
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
 
 		<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
-
 	</PropertyGroup>
 
 	<ItemGroup>
