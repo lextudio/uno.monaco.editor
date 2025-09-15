@@ -75,10 +75,12 @@ namespace Monaco
             await SendScriptAsync("EditorContext.getEditorForElement(element).editor.focus();");
 
             // If we're supposed to have focus, make sure we try and refocus on our now loaded webview.
+#pragma warning disable CS0618 // Type or member is obsolete
             if (FocusManager.GetFocusedElement() == this)
             {
                 _view?.Focus(FocusState.Programmatic);
             }
+#pragma warning restore CS0618 // Type or member is obsolete
 
             EditorLoaded?.Invoke(this, new RoutedEventArgs());
         }
@@ -153,10 +155,12 @@ namespace Monaco
             }
 
             // If we're supposed to have focus, make sure we try and refocus on our now loaded webview.
+#pragma warning disable CS0618 // Type or member is obsolete
             if (FocusManager.GetFocusedElement() == this)
             {
                 _view.Focus(FocusState.Programmatic);
             }
+#pragma warning restore CS0618 // Type or member is obsolete
 
             IsEditorLoaded = true;
 
@@ -222,11 +226,13 @@ namespace Monaco
         {
             base.OnGotFocus(e);
 
+#pragma warning disable CS0618 // Type or member is obsolete
             if (_view != null && FocusManager.GetFocusedElement() == this)
             {
                 // Forward Focus onto our inner WebView
                 _view.Focus(FocusState.Programmatic);
             }
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }

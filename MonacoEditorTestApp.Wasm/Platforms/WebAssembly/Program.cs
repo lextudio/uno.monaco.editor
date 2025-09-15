@@ -1,18 +1,21 @@
 using Microsoft.UI.Text;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Media;
 
 namespace MonacoEditorTestApp;
 
 public class Program
 {
-    private static App? _app;
-
     public static async Task<int> Main(string[] args)
     {
         App.InitializeLogging();
 
-        var host = new global::Uno.UI.Runtime.Skia.WebAssembly.Browser.WebAssemblyBrowserHost(() => _app = new App());
-        await host.Run();
+        var host = UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseWebAssembly()
+            .Build();
+
+        await host.RunAsync();
 
         return 0;
     }
