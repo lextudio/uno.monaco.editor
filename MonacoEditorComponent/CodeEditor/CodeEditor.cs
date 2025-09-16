@@ -70,7 +70,7 @@ namespace Monaco
             {
                 Options = new StandaloneEditorConstructionOptions();
 
-                // Set Pass-Thru Properties
+                    // Set Pass-Thru Properties
                 Options.GlyphMargin = HasGlyphMargin;
                 Options.Language = CodeLanguage;
                 Options.ReadOnly = ReadOnly;
@@ -110,6 +110,8 @@ namespace Monaco
 
         private async void Options_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if(!_initialized || _view == null) return;
+
             if (!(sender is StandaloneEditorConstructionOptions options)) return;
             if (e.PropertyName == nameof(StandaloneEditorConstructionOptions.Language)
                 && options.Language is not null)

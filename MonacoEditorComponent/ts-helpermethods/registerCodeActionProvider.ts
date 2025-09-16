@@ -1,7 +1,7 @@
 ﻿///<reference path="../monaco-editor/monaco.d.ts" />
 
-function isTextEdit(edit: monaco.languages.WorkspaceTextEdit | monaco.languages.WorkspaceFileEdit): edit is monaco.languages.WorkspaceTextEdit {
-    return (edit as monaco.languages.WorkspaceTextEdit).edit !== undefined;
+function isTextEdit(edit: monaco.languages.IWorkspaceTextEdit | monaco.languages.IWorkspaceFileEdit): edit is monaco.languages.IWorkspaceTextEdit {
+    return (edit as monaco.languages.IWorkspaceTextEdit).textEdit !== undefined;
 }
 
 const registerCodeActionProvider = function (unused: any, languageId) {
