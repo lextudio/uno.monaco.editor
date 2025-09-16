@@ -54,11 +54,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Condition="'$(IsWindows)' == 'true'">
-			<Version>3.8.3</Version>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Condition="'$(IsWindows)' == 'true'" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -93,6 +89,7 @@
 		<Content Include="ts-helpermethods\tsconfig.json" />
 		<Content Include="monaco-editor\*.*" />
 		<Content Include="monaco-editor\min\**\*.*" />
+		<Content Include="monaco-editor\min-maps\**\*.*" />
 		<Content Include="ts-helpermethods\*.js">
 			<DependentUpon>%(Filename).ts</DependentUpon>
 		</Content>
