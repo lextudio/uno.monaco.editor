@@ -89,7 +89,6 @@
 		<Content Include="ts-helpermethods\tsconfig.json" />
 		<Content Include="monaco-editor\*.*" />
 		<Content Include="monaco-editor\min\**\*.*" />
-		<Content Include="monaco-editor\min-maps\**\*.*" />
 		<Content Include="ts-helpermethods\*.js">
 			<DependentUpon>%(Filename).ts</DependentUpon>
 		</Content>
