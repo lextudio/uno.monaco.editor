@@ -2,24 +2,25 @@ jobs:
 - job: Windows
 
   pool:
-    vmImage: 'windows-2022'
+    vmImage: 'windows-latest'
 
   steps:
-  - template: build/templates/gitversion.yml
+  - template: build/templates/gitversion-run.yml
 
   - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 3.1.x'
+    displayName: 'Use .NET 10 SDK'
     inputs:
-      packageType: runtime
-      version: 5.0.x
+      includePreviewVersions: true
+      version: 10.x
+  
+  - script: dotnet workload install wasm-tools wasm-tools-net9
+    displayName: Install workloads
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 19041
-    displayName: Windows SDK Install
-
-  - task: MSBuild@1
+  - task: DotNetCoreCLI@2
     inputs:
-      solution: MonacoEditorComponent.slnf
-      msbuildArguments: /r /p:Configuration=Release "/p:PackageOutputPath=$(build.artifactstagingdirectory)\nuget" "/p:PackageVersion=$(GITVERSION.FullSemVer)" "/p:InformationalVersion=$(GITVERSION.InformationalVersion)"  /detailedsummary /bl:$(build.artifactstagingdirectory)/build.binlog
+      command: build      
+      projects: MonacoEditorComponent.slnx
+      arguments:  -c Release -p:PackageOutputPath=$(build.artifactstagingdirectory)/nuget /bl:$(build.artifactstagingdirectory)/build.binlog 
 
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
