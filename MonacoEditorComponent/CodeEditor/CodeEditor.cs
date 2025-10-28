@@ -1,15 +1,16 @@
 ﻿using Collections.Generic;
+
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
 using Monaco.Editor;
 using Monaco.Extensions;
 using Monaco.Helpers;
-using System;
+
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Dispatching;
 
 namespace Monaco
 {
@@ -70,7 +71,7 @@ namespace Monaco
             {
                 Options = new StandaloneEditorConstructionOptions();
 
-                    // Set Pass-Thru Properties
+                // Set Pass-Thru Properties
                 Options.GlyphMargin = HasGlyphMargin;
                 Options.Language = CodeLanguage;
                 Options.ReadOnly = ReadOnly;
@@ -81,9 +82,9 @@ namespace Monaco
             Decorations = new ObservableVector<IModelDeltaDecoration>();
             Markers = new ObservableVector<IMarkerData>();
             //_model = new ModelHelper(this);
-            #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
             Languages = new LanguagesHelper(this);
-            #pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore CS0618 // Type or member is obsolete
             _cssBroker = new CssStyleBroker(this);
 
             Loaded += CodeEditor_Loaded;
@@ -110,7 +111,7 @@ namespace Monaco
 
         private async void Options_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if(!_initialized || _view == null) return;
+            if (!_initialized || _view == null) return;
 
             if (!(sender is StandaloneEditorConstructionOptions options)) return;
             if (e.PropertyName == nameof(StandaloneEditorConstructionOptions.Language)
@@ -159,7 +160,7 @@ namespace Monaco
                 ReadOnly = Options.ReadOnly.Value;
             }
 
-            Console.WriteLine($"CodeEditor_Loaded [{_model}] [{_view}] ({GetHashCode():x8})");
+            Debug.WriteLine($"CodeEditor_Loaded [{_model}] [{_view}] ({GetHashCode():x8})");
 
             // Do this the 2nd time around.
             if (_model == null && _view != null)
@@ -218,7 +219,7 @@ namespace Monaco
                 _themeListener.ThemeChanged -= ThemeListener_ThemeChanged;
             }
             _themeListener = null;
-            
+
             UnregisterPropertyChangedCallback(RequestedThemeProperty, _themeToken);
             _keyboardListener = null;
             _model = null;
@@ -390,7 +391,7 @@ namespace Monaco
             if (uri.IsAbsoluteUri)
             {
 #if __WASM__
-                if (uri.Scheme == "file" || uri.Scheme== "ms-appx-web")
+                if (uri.Scheme == "file" || uri.Scheme == "ms-appx-web")
                 {
                     // Local files are assumed as coming from the remoter server
                     target = UNO_BOOTSTRAP_APP_BASE == null ? uri.PathAndQuery : UNO_BOOTSTRAP_WEBAPP_BASE_PATH + UNO_BOOTSTRAP_APP_BASE + uri.PathAndQuery;

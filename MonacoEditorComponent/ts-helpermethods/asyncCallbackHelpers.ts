@@ -8,16 +8,6 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
         var opt = {}
     };
 
-    //try {
-    //    opt = getOptions(element);
-    //}
-    //catch (err) {
-    //    console.debug("Unable to read options - " + err);
-    //}
-
-    // console.debug("Getting Parent Text value");
-    // opt["value"] = getParentValue(element, "Text");
-
     console.debug("Getting Host container");
     console.debug("Creating Editor");
     const editor = monaco.editor.create(element, opt);
@@ -37,9 +27,6 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
     editorContext.model.onDidChangeContent((event) => {
         {
             editorContext.Accessor.setValue("Text", stringifyForMarshalling(editorContext.model.getValue()));
-            //console.log("buffers: " + JSON.stringify(model._buffer._pieceTree._buffers));
-            //console.log("commandMgr: " + JSON.stringify(model._commandManager));
-            //console.log("viewState:" + JSON.stringify(editor.saveViewState()));
         }
     });
 

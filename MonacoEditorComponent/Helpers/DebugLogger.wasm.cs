@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using System.Text;
 
 namespace Monaco.Helpers
 {
-	partial class DebugLogger
-	{
-        private static ConditionalWeakTable<object, DebugLogger> _instances = new();
+    partial class DebugLogger
+    {
+        private static readonly ConditionalWeakTable<object, DebugLogger> _instances = [];
 
         public DebugLogger(ICodeEditorPresenter codeEditor)
-		{
+        {
             _instances.Add(codeEditor, this);
 
             Log("created");
-		}
+        }
 
         [JSExport]
         public static void NativeLog([JSMarshalAs<JSType.Any>] object managedOwner, string message)

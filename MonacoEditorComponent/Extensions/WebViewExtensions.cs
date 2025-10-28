@@ -1,8 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.JavaScript;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Monaco.Extensions
 {
@@ -25,23 +25,8 @@ namespace Monaco.Extensions
             [CallerFilePath] string? file = null,
             [CallerLineNumber] int line = 0)
         {
-            //var start = "try {\n";
-            //if (typeof(T) != typeof(object))
-            //{
-            //    script = script.Trim(';');
-            //     start += "return JSON.stringify(" + script + ");";
-            //}
-            //else
-            //{
-            //    start += script;
-            //}
-            //var fullscript = start + 
-            //    "\n} catch (err) { return JSON.stringify({ wv_internal_error: true, message: err.message, description: err.description, number: err.number, stack: err.stack }); }";
-
             var fullscript = script;
 
-            //if (_view.Dispatcher.HasThreadAccess)
-            //{
             try
             {
                 return await RunScriptHelperAsync<T>(_view, fullscript);
@@ -50,21 +35,6 @@ namespace Monaco.Extensions
             {
                 throw new JavaScriptExecutionException(member, file, line, script, e);
             }
-            //}
-            //else
-            //{
-            //    return await _view.Dispatcher.RunTaskAsync(async () =>
-            //    {
-            //        try
-            //        {
-            //            return await RunScriptHelperAsync<T>(_view, fullscript);
-            //        }
-            //        catch (Exception e)
-            //        {
-            //            throw new JavaScriptExecutionException(member, file, line, script, e);
-            //        }
-            //    });
-            //}
         }
 
         private static async Task<T?> RunScriptHelperAsync<T>(ICodeEditorPresenter _view, string script)

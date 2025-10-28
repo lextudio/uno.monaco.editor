@@ -7,7 +7,6 @@
 		<PackageId>Uno.Monaco.Editor</PackageId>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
-		<!--<Nullable>enable</Nullable>-->
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<Product>Uno.Monaco.Editor</Product>

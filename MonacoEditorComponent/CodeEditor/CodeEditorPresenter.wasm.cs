@@ -1,8 +1,9 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
 using Monaco.Helpers;
+
+using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 
 using Uno.Extensions;
 using Uno.Logging;
@@ -21,7 +22,7 @@ namespace Monaco
 
         public CodeEditorPresenter()
         {
-            Console.WriteLine("CodeEditorPresenter()");
+            Debug.WriteLine("CodeEditorPresenter()");
             Content = _element = BrowserHtmlElement.CreateHtmlElement("monaco-" + this.GetHashCode(), "div");
 
             LayoutUpdated += (s, e) =>
@@ -115,12 +116,12 @@ namespace Monaco
                     throw new InvalidOperationException($"The ParentCodeEditor property must be set");
                 }
 
-                Console.WriteLine($"InitializeMonaco({this.GetHashCode():X8})");
+                Debug.WriteLine($"InitializeMonaco({this.GetHashCode():X8})");
                 await NativeMethods.InitializeMonaco(this, _element.ElementId, $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
             }
         }
 
