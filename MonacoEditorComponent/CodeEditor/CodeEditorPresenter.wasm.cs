@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
+
+using Microsoft.UI.Xaml.Controls;
 
 using Monaco.Helpers;
-
-using System.Diagnostics;
-using System.Runtime.InteropServices.JavaScript;
 
 using Uno.Extensions;
 using Uno.Logging;
@@ -115,6 +115,8 @@ namespace Monaco
 
                 Debug.WriteLine($"InitializeMonaco({this.GetHashCode():X8})");
                 await NativeMethods.InitializeMonaco(this, _element.ElementId, $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}");
+
+                NativeMethods.RefreshLayout(_element.ElementId);
             }
             catch (Exception e)
             {
