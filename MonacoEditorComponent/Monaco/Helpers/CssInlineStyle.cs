@@ -37,7 +37,7 @@ namespace Monaco.Helpers
 
         public string ToCss()
         {
-            StringBuilder output = new StringBuilder(40);
+            StringBuilder output = new(40);
             if (TextDecoration != TextDecoration.None)
             {
                 string text = TextDecoration.ToString().ToLower();

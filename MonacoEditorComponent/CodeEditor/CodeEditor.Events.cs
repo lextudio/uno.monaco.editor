@@ -1,15 +1,14 @@
-﻿using Monaco.Helpers;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.System;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+
+using Monaco.Helpers;
+
+using System.Diagnostics;
+using System.Reflection;
+
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Monaco
 {
@@ -104,7 +103,7 @@ namespace Monaco
             {
                 _queue = _queue ?? throw new InvalidOperationException("DispatcherQueue not set");
 
-                if(_view == null)
+                if (_view == null)
                 {
                     throw new InvalidOperationException("Unable to find CodeEditorPresenter");
                 }
@@ -122,11 +121,11 @@ namespace Monaco
 
                 Debug.WriteLine($"InitialiseWebObjects - Completed");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"InitialiseWebObjects Error {ex.Message} {ex.StackTrace}");
             }
-        }        
+        }
 
         private async void CodeEditorLoaded()
         {
@@ -137,7 +136,7 @@ namespace Monaco
             if (Decorations != null && Decorations.Count > 0)
             {
                 // Need to retrigger highlights after load if they were set before load.
-                await DeltaDecorationsHelperAsync(Decorations.ToArray());
+                await DeltaDecorationsHelperAsync([.. Decorations]);
             }
 
             // Now we're done loading
@@ -199,7 +198,7 @@ namespace Monaco
 
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                 {
-                    await InvokeScriptAsync("changeTheme", new string[] { tstr ?? "", listener.IsHighContrast.ToString() });
+                    await InvokeScriptAsync("changeTheme", [tstr ?? "", listener.IsHighContrast.ToString()]);
                 });
             }
         }
@@ -210,7 +209,7 @@ namespace Monaco
             {
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                 {
-                    await InvokeScriptAsync("changeTheme", args: new string[] { sender.CurrentTheme.ToString(), sender.IsHighContrast.ToString() });
+                    await InvokeScriptAsync("changeTheme", args: [sender.CurrentTheme.ToString(), sender.IsHighContrast.ToString()]);
                 });
             }
         }

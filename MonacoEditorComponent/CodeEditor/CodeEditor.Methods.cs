@@ -1,14 +1,10 @@
 ﻿using CommunityToolkit.WinUI;
+
 using Monaco.Editor;
 using Monaco.Extensions;
-using Monaco.Helpers;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using System.Threading.Tasks;
+
 using Windows.Foundation;
 
 namespace Monaco
@@ -25,7 +21,7 @@ namespace Monaco
     /// </summary>
     public partial class CodeEditor
     {
-#region Reveal Methods
+        #region Reveal Methods
         public IAsyncAction RevealLineAsync(uint lineNumber)
         {
             return SendScriptAsync("editor.revealLine(" + lineNumber + ")").AsAsyncAction();
@@ -100,7 +96,7 @@ namespace Monaco
         {
             return SendScriptAsync("editor.revealRangeInCenterIfOutsideViewport(JSON.parse('" + JsonConvert.SerializeObject(range) + "'))").AsAsyncAction();
         }
-#endregion
+        #endregion
 
         public IAsyncAction AddActionAsync(IActionDescriptor action)
         {
@@ -141,13 +137,13 @@ namespace Monaco
 
         public async Task<string?> AddCommandAsync(int keybinding, CommandHandler handler, string context)
         {
-            if(_parentAccessor == null)
+            if (_parentAccessor == null)
             {
                 throw new InvalidOperationException($"_parentAccessor is not available");
             }
 
             var name = "Command" + Interlocked.Increment(ref _commandIndex);
-            _parentAccessor.RegisterActionWithParameters(name, (parameters) => 
+            _parentAccessor.RegisterActionWithParameters(name, (parameters) =>
             {
                 if (parameters != null && parameters.Length > 0)
                 {
@@ -161,10 +157,10 @@ namespace Monaco
                 }
                 else
                 {
-                    handler?.Invoke(new object[] {});
+                    handler?.Invoke([]);
                 }
             });
-            return await InvokeScriptAsync<string>("addCommand", new object[] { keybinding, name, context });
+            return await InvokeScriptAsync<string>("addCommand", [keybinding, name, context]);
         }
 
         public async Task<ContextKey> CreateContextKeyAsync(string key, bool defaultValue)
@@ -214,18 +210,18 @@ namespace Monaco
 
             await _queue.EnqueueAsync(async () =>
             {
-                var newDecorationsAdjust = newDecorations ?? Array.Empty<IModelDeltaDecoration>();
+                var newDecorationsAdjust = newDecorations ?? [];
 
                 if (_cssBroker is not null
                     && _cssBroker.AssociateStyles(newDecorationsAdjust))
                 {
-                        // Update Styles First
-                        await InvokeScriptAsync("updateStyle", _cssBroker.GetStyles());
+                    // Update Styles First
+                    await InvokeScriptAsync("updateStyle", _cssBroker.GetStyles());
                 }
 
-                    // Send Command to Modify Decorations
-                    // IMPORTANT: Need to cast to object here as we want this to be a single array object passed as a parameter, not a list of parameters to expand.
-                    await InvokeScriptAsync("updateDecorations", (object)newDecorationsAdjust);
+                // Send Command to Modify Decorations
+                // IMPORTANT: Need to cast to object here as we want this to be a single array object passed as a parameter, not a list of parameters to expand.
+                await InvokeScriptAsync("updateDecorations", (object)newDecorationsAdjust);
             });
         }
     }

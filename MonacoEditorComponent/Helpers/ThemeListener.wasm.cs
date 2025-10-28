@@ -1,22 +1,16 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using Uno;
-using Uno.Foundation;
 
 namespace Monaco.Helpers
 {
-	partial class ThemeListener
-	{
-        private static ConditionalWeakTable<object, ThemeListener> _instances = new();
-        
+    partial class ThemeListener
+    {
+        private static readonly ConditionalWeakTable<object, ThemeListener> _instances = [];
+
         partial void PartialCtor()
-		{
+        {
             _instances.Add(_owner, this);
-		}
+        }
 
         [JSExport]
         public static string ManagedGetCurrentThemeName([JSMarshalAs<JSType.Any>] object managedOwner)

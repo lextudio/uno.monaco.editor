@@ -1,13 +1,11 @@
 ﻿using CommunityToolkit.WinUI;
+
 using Microsoft.UI.Dispatching;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Foundation.Metadata;
 
 namespace Monaco.Helpers
@@ -23,10 +21,10 @@ namespace Monaco.Helpers
         private readonly Type typeinfo;
         private readonly DispatcherQueue _queue;
         private Dictionary<string, Action>? actions;
-        private Dictionary<string, Action<string[]>> action_parameters;
+        private readonly Dictionary<string, Action<string[]>> action_parameters;
         private Dictionary<string, Func<string[], Task<string>?>>? events;
 
-        private List<Assembly> Assemblies { get; set; } = new List<Assembly>();
+        private List<Assembly> Assemblies { get; set; } = [];
 
         /// <summary>
         /// Constructs a new reflective parent Accessor for the provided object.
@@ -54,10 +52,7 @@ namespace Monaco.Helpers
         /// <param name="action">Action to perform.</param>
         internal void RegisterAction(string name, Action action)
         {
-            if (actions is not null)
-            {
-                actions[name] = action;
-            }
+            actions?[name] = action;
         }
 
         internal void RegisterActionWithParameters(string name, Action<string[]> action)
@@ -72,10 +67,7 @@ namespace Monaco.Helpers
         /// <param name="function">Event to call.</param>
         internal void RegisterEvent(string name, Func<string[], Task<string>?> function)
         {
-            if (events is not null)
-            {
-                events[name] = function;
-            }
+            events?[name] = function;
         }
 
         /// <summary>
@@ -90,7 +82,7 @@ namespace Monaco.Helpers
 
             await _queue.EnqueueAsync(async () =>
             {
-                if (events is not null 
+                if (events is not null
                     && events.TryGetValue(name, out Func<string[], Task<string>?>? value))
                 {
                     var task = value?.Invoke(parameters);
@@ -121,13 +113,13 @@ namespace Monaco.Helpers
         public bool CallAction(string name)
         {
             if (actions is not null &&
-                actions.ContainsKey(name))
+                actions.TryGetValue(name, out Action? value))
             {
                 // TODO: Not sure if this a problem too?
                 _queue.EnqueueAsync(() =>
                 {
-                    actions[name]?.Invoke();
-                });                
+                    value?.Invoke();
+                });
                 return true;
             }
 
@@ -142,11 +134,11 @@ namespace Monaco.Helpers
         /// <returns>True if method was found in registration.</returns>
         public bool CallActionWithParameters(string name, string[] parameters)
         {
-            if (action_parameters.ContainsKey(name))
+            if (action_parameters.TryGetValue(name, out Action<string[]>? value))
             {
                 _queue.EnqueueAsync(() =>
                 {
-                    action_parameters[name]?.Invoke(parameters);
+                    value?.Invoke(parameters);
                 });
                 return true;
             }
@@ -245,7 +237,7 @@ namespace Monaco.Helpers
 
                         propinfo?.SetValue(tobj, newValue);
                     }
-                    finally 
+                    finally
                     {
                         tobj.IsSettingValue = false;
                     }
@@ -314,17 +306,11 @@ namespace Monaco.Helpers
 
         public void Dispose()
         {
-            if (actions != null)
-            {
-                actions.Clear();
-            }
+            actions?.Clear();
 
             actions = null;
 
-            if (events != null)
-            {
-                events.Clear();
-            }
+            events?.Clear();
 
             events = null;
         }

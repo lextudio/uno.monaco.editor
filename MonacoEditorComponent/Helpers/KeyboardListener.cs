@@ -1,11 +1,8 @@
 ﻿using Microsoft.UI.Dispatching;
-using System;
+
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Foundation.Metadata;
 
 namespace Monaco.Helpers
@@ -28,7 +25,7 @@ namespace Monaco.Helpers
     [AllowForWeb]
     public sealed partial class KeyboardListener
     {
-        private static ConditionalWeakTable<object, KeyboardListener> _instances = new();
+        private static readonly ConditionalWeakTable<object, KeyboardListener> _instances = [];
         private readonly WeakReference<ICodeEditorPresenter> parent;
         private readonly DispatcherQueue _queue;
 

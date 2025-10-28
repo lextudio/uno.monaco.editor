@@ -19,16 +19,13 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "off":
-                    return AcceptSuggestionOnEnter.Off;
-                case "on":
-                    return AcceptSuggestionOnEnter.On;
-                case "smart":
-                    return AcceptSuggestionOnEnter.Smart;
-            }
-            throw new Exception("Cannot unmarshal type AcceptSuggestionOnEnter");
+                "off" => AcceptSuggestionOnEnter.Off,
+                "on" => AcceptSuggestionOnEnter.On,
+                "smart" => AcceptSuggestionOnEnter.Smart,
+                _ => throw new Exception("Cannot unmarshal type AcceptSuggestionOnEnter"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

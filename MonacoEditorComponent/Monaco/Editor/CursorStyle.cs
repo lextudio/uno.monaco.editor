@@ -18,22 +18,16 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "block":
-                    return CursorStyle.Block;
-                case "block-outline":
-                    return CursorStyle.BlockOutline;
-                case "line":
-                    return CursorStyle.Line;
-                case "line-thin":
-                    return CursorStyle.LineThin;
-                case "underline":
-                    return CursorStyle.Underline;
-                case "underline-thin":
-                    return CursorStyle.UnderlineThin;
-            }
-            throw new Exception("Cannot unmarshal type CursorStyle");
+                "block" => CursorStyle.Block,
+                "block-outline" => CursorStyle.BlockOutline,
+                "line" => CursorStyle.Line,
+                "line-thin" => CursorStyle.LineThin,
+                "underline" => CursorStyle.Underline,
+                "underline-thin" => CursorStyle.UnderlineThin,
+                _ => throw new Exception("Cannot unmarshal type CursorStyle"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

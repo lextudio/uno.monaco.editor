@@ -1,4 +1,5 @@
 ﻿using Monaco.Editor;
+
 using Newtonsoft.Json;
 
 namespace Monaco.Languages
@@ -7,7 +8,7 @@ namespace Monaco.Languages
     /// A completion item represents a text snippet that is
     /// proposed to complete text that is being typed.
     /// </summary>
-    public sealed class CompletionItem
+    public sealed class CompletionItem(string label, string insertText, CompletionItemKind kind)
     {
         /// <summary>
         /// An optional array of additional text edits that are applied when
@@ -60,7 +61,7 @@ namespace Monaco.Languages
         /// is used.
         /// </summary>
         [JsonProperty("insertText")]
-        public string? InsertText { get; set; }
+        public string? InsertText { get; set; } = insertText;
 
         /// <summary>
         /// Addition rules (as bitmask) that should be applied when inserting
@@ -74,7 +75,7 @@ namespace Monaco.Languages
         /// an icon is chosen by the editor.
         /// </summary>
         [JsonProperty("kind")]
-        public CompletionItemKind Kind { get; set; }
+        public CompletionItemKind Kind { get; set; } = kind;
 
         /// <summary>
         /// The label of this completion item. By default
@@ -82,7 +83,7 @@ namespace Monaco.Languages
         /// this completion.
         /// </summary>
         [JsonProperty("label")]
-        public string? Label { get; set; }
+        public string? Label { get; set; } = label;
 
         /// <summary>
         /// Select this item when showing. *Note* that only one completion item can be selected and
@@ -120,12 +121,5 @@ namespace Monaco.Languages
         /// </summary>
         [JsonProperty("tags", NullValueHandling = NullValueHandling.Ignore)]
         public MarkerTag[]? Tags { get; set; }
-
-        public CompletionItem(string label, string insertText, CompletionItemKind kind)
-        {
-            InsertText = insertText;
-            Label = label;
-            Kind = kind;
-        }
     }
 }

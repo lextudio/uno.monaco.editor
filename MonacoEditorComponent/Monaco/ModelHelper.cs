@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using Windows.Foundation;
 
 namespace Monaco.Editor;
 
@@ -10,14 +7,9 @@ namespace Monaco.Editor;
 /// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.imodel.html
 /// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
 /// </summary>
-public sealed class ModelHelper : IModel
+public sealed class ModelHelper(CodeEditor editor) : IModel
 {
-    private readonly WeakReference<CodeEditor> _editor;
-
-    public ModelHelper(CodeEditor editor)
-    {
-        _editor = new WeakReference<CodeEditor>(editor);
-    }
+    private readonly WeakReference<CodeEditor> _editor = new(editor);
 
     public string Id => throw new NotImplementedException();
 
@@ -27,7 +19,7 @@ public sealed class ModelHelper : IModel
     {
         if (_editor.TryGetTarget(out var editor))
         {
-            await editor.InvokeScriptAsync("EditorContext.getEditorForElement(element).model.detectIndentationAsync", new object[] { defaultInsertSpaces, defaultTabSize });
+            await editor.InvokeScriptAsync("EditorContext.getEditorForElement(element).model.detectIndentationAsync", [defaultInsertSpaces, defaultTabSize]);
         }
     }
 
@@ -47,7 +39,7 @@ public sealed class ModelHelper : IModel
     {
         if (_editor.TryGetTarget(out var editor))
         {
-            return await editor.InvokeScriptAsync<IEnumerable<FindMatch>>("EditorContext.getEditorForElement(element).model.findMatches", new object?[] { searchString, searchOnlyEditableRange, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount }).AsAsyncOperation();
+            return await editor.InvokeScriptAsync<IEnumerable<FindMatch>>("EditorContext.getEditorForElement(element).model.findMatches", [searchString, searchOnlyEditableRange, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount]).AsAsyncOperation();
         }
 
         return [];
@@ -57,7 +49,7 @@ public sealed class ModelHelper : IModel
     {
         if (_editor.TryGetTarget(out var editor))
         {
-            return await editor.InvokeScriptAsync<IEnumerable<FindMatch>>("EditorContext.getEditorForElement(element).model.findMatches", new object?[] { searchString, searchScope, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount }).AsAsyncOperation();
+            return await editor.InvokeScriptAsync<IEnumerable<FindMatch>>("EditorContext.getEditorForElement(element).model.findMatches", [searchString, searchScope, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount]).AsAsyncOperation();
         }
 
         return [];
@@ -67,7 +59,7 @@ public sealed class ModelHelper : IModel
     {
         if (_editor.TryGetTarget(out var editor))
         {
-            return await editor.InvokeScriptAsync<FindMatch>("EditorContext.getEditorForElement(element).model.findNextMatch", new object?[] { searchString, searchString, isRegex, matchCase, wordSeparators, captureMatches }).AsAsyncOperation();
+            return await editor.InvokeScriptAsync<FindMatch>("EditorContext.getEditorForElement(element).model.findNextMatch", [searchString, searchString, isRegex, matchCase, wordSeparators, captureMatches]).AsAsyncOperation();
         }
 
         return null;
@@ -77,7 +69,7 @@ public sealed class ModelHelper : IModel
     {
         if (_editor.TryGetTarget(out var editor))
         {
-            return await editor.InvokeScriptAsync<FindMatch>("EditorContext.getEditorForElement(element).model.findPreviousMatch", new object[] { searchString, searchString, isRegex, matchCase, wordSeparators, captureMatches }).AsAsyncOperation();
+            return await editor.InvokeScriptAsync<FindMatch>("EditorContext.getEditorForElement(element).model.findPreviousMatch", [searchString, searchString, isRegex, matchCase, wordSeparators, captureMatches]).AsAsyncOperation();
         }
 
         return null;

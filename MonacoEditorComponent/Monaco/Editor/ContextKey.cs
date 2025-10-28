@@ -27,7 +27,7 @@ namespace Monaco.Editor
         {
             if (_editor.TryGetTarget(out var editor))
             {
-                await editor.InvokeScriptAsync("updateContext", new object[] { Key, Value });
+                await editor.InvokeScriptAsync("updateContext", [Key, Value]);
             }
         }
 

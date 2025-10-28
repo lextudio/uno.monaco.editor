@@ -16,12 +16,12 @@ namespace MonacoEditorTestApp.Helpers
             var word = await model.GetWordAtPositionAsync(position);
             if (word != null && word.Word != null && word.Word.IndexOf("Hit", 0, StringComparison.CurrentCultureIgnoreCase) != -1)
             {
-                return new Hover(new string[]
-                {
+                return new Hover(
+                [
                         "*Hit* - press the keys following together.",
                         "Some **more** text is here.",
                         "And a [link](https://www.github.com/)."
-                }, new Monaco.Range(position.LineNumber, position.Column, position.LineNumber, position.Column + 5));
+                ], new Monaco.Range(position.LineNumber, position.Column, position.LineNumber, position.Column + 5));
             }
 
             return null;

@@ -19,16 +19,13 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "auto":
-                    return ScrollbarBehavior.Auto;
-                case "hidden":
-                    return ScrollbarBehavior.Hidden;
-                case "visible":
-                    return ScrollbarBehavior.Visible;
-            }
-            throw new Exception("Cannot unmarshal type ScrollbarBehavior");
+                "auto" => ScrollbarBehavior.Auto,
+                "hidden" => ScrollbarBehavior.Hidden,
+                "visible" => ScrollbarBehavior.Visible,
+                _ => throw new Exception("Cannot unmarshal type ScrollbarBehavior"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

@@ -19,20 +19,15 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "advanced":
-                    return AutoIndent.Advanced;
-                case "brackets":
-                    return AutoIndent.Brackets;
-                case "full":
-                    return AutoIndent.Full;
-                case "keep":
-                    return AutoIndent.Keep;
-                case "none":
-                    return AutoIndent.None;
-            }
-            throw new Exception("Cannot unmarshal type AutoIndent");
+                "advanced" => AutoIndent.Advanced,
+                "brackets" => AutoIndent.Brackets,
+                "full" => AutoIndent.Full,
+                "keep" => AutoIndent.Keep,
+                "none" => AutoIndent.None,
+                _ => throw new Exception("Cannot unmarshal type AutoIndent"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

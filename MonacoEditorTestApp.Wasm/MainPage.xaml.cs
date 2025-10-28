@@ -31,10 +31,12 @@ namespace MonacoEditorTestApp
 
         private void AddEditorTab()
         {
-            var tabItem = new TabViewItem();
-            tabItem.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
-            tabItem.Header = "item";
-            tabItem.Content = new EditorControl();
+            var tabItem = new TabViewItem
+            {
+                IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document },
+                Header = "item",
+                Content = new EditorControl()
+            };
             editors.TabItems.Add(tabItem);
         }
 

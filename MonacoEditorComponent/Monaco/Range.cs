@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace Monaco
 {
@@ -73,9 +72,9 @@ namespace Monaco
         public bool ContainsRange(IRange range)
         {
             bool isStart = StartLineNumber <= range.StartLineNumber;
-            bool isStartColumn = (StartLineNumber == range.StartLineNumber) ? StartColumn <= range.StartColumn : true;
+            bool isStartColumn = StartLineNumber != range.StartLineNumber || StartColumn <= range.StartColumn;
             bool isEnd = EndLineNumber >= range.EndLineNumber;
-            bool isEndColumn = (EndLineNumber == range.EndLineNumber) ? EndColumn >= range.EndColumn : true;
+            bool isEndColumn = EndLineNumber != range.EndLineNumber || EndColumn >= range.EndColumn;
 
             return isStart && isStartColumn && isEnd && isEndColumn;
         }

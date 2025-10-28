@@ -23,18 +23,14 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "bounded":
-                    return WordWrap.Bounded;
-                case "off":
-                    return WordWrap.Off;
-                case "on":
-                    return WordWrap.On;
-                case "wordWrapColumn":
-                    return WordWrap.WordWrapColumn;
-            }
-            throw new Exception("Cannot unmarshal type WordWrap");
+                "bounded" => WordWrap.Bounded,
+                "off" => WordWrap.Off,
+                "on" => WordWrap.On,
+                "wordWrapColumn" => WordWrap.WordWrapColumn,
+                _ => throw new Exception("Cannot unmarshal type WordWrap"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

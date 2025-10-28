@@ -1,8 +1,4 @@
 using Monaco.Editor;
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Windows.Foundation;
 
 namespace Monaco.Languages
 {

@@ -12,22 +12,17 @@ using Windows.Foundation;
 
 namespace MonacoEditorTestApp.Helpers
 {
-    public class EditorCodeLensProvider : CodeLensProvider
+    public class EditorCodeLensProvider(string commandId) : CodeLensProvider
     {
-        private string _commandId;
-
-        public EditorCodeLensProvider(string commandId)
-        {
-            _commandId = commandId;
-        }
+        private readonly string _commandId = commandId;
 
         public async Task<CodeLensList> ProvideCodeLensesAsync(IModel model)
         {
 
             return new CodeLensList()
             {
-                Lenses = new CodeLens[] {
-                        new CodeLens()
+                Lenses = [
+                        new()
                         {
                             Id = "Second Line",
                             Range = new Monaco.Range(2, 1, 3, 1),
@@ -35,11 +30,11 @@ namespace MonacoEditorTestApp.Helpers
                             {
                                 Id = _commandId,
                                 Title = "Second Line Command",
-                                Arguments = new object[] { "Arg 1" , 5, new float[] { 4.5f, 0.3f } }, // Note: This 3rd element array will come back as a JArray TODO?
+                                Arguments = ["Arg 1" , 5, new float[] { 4.5f, 0.3f }], // Note: This 3rd element array will come back as a JArray TODO?
                                 Tooltip = "This is a CodeLens Command"
                             }
                         }
-                    }
+                    ]
             };
         }
 

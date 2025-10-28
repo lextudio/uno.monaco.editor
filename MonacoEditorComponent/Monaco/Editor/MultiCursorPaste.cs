@@ -20,14 +20,12 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "full":
-                    return MultiCursorPaste.Full;
-                case "spread":
-                    return MultiCursorPaste.Spread;
-            }
-            throw new Exception("Cannot unmarshal type MultiCursorPaste");
+                "full" => MultiCursorPaste.Full,
+                "spread" => MultiCursorPaste.Spread,
+                _ => throw new Exception("Cannot unmarshal type MultiCursorPaste"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

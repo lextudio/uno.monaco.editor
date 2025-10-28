@@ -55,7 +55,7 @@ namespace Monaco.Extensions
             return default;
         }
 
-        private static readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings _settings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -94,7 +94,7 @@ namespace Monaco.Extensions
             [CallerFilePath] string? file = null,
             [CallerLineNumber] int line = 0)
         {
-            return await _view.InvokeScriptAsync<T>(method, new object[] { arg }, serialize, member, file, line);
+            return await _view.InvokeScriptAsync<T>(method, [arg], serialize, member, file, line);
         }
 
         public static async Task<T?> InvokeScriptAsync<T>(
@@ -113,7 +113,7 @@ namespace Monaco.Extensions
                 System.Diagnostics.Debug.WriteLine($"Begin invoke script (serialize - {serialize})");
                 if (serialize)
                 {
-                    sanitizedargs = args.Select(item =>
+                    sanitizedargs = [.. args.Select(item =>
                     {
                         if (item is int || item is double)
                         {
@@ -128,11 +128,11 @@ namespace Monaco.Extensions
                             // TODO: Need JSON.parse?
                             return JsonConvert.SerializeObject(item, _settings);
                         }
-                    }).ToArray();
+                    })];
                 }
                 else
                 {
-                    sanitizedargs = args.Select(item => item?.ToString()).ToArray();
+                    sanitizedargs = [.. args.Select(item => item?.ToString())];
                 }
 
                 var script = method + "(element," + string.Join(",", sanitizedargs) + ");";
@@ -145,40 +145,25 @@ namespace Monaco.Extensions
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error {ex.Message} {ex.StackTrace} {ex.InnerException?.Message})");
-                return default(T);
+                return default;
             }
         }
     }
 
-    internal sealed class JavaScriptExecutionException : Exception
+    internal sealed class JavaScriptExecutionException(string? member, string? filename, int line, string? script, Exception inner) : Exception("Error Executing JavaScript Code for " + member + "\nLine " + line + " of " + filename + "\n" + script + "\n", inner)
     {
-        public string? Script { get; private set; }
+        public string? Script { get; private set; } = script;
 
-        public string? Member { get; private set; }
+        public string? Member { get; private set; } = member;
 
-        public string? FileName { get; private set; }
+        public string? FileName { get; private set; } = filename;
 
-        public int LineNumber { get; private set; }
-
-        public JavaScriptExecutionException(string? member, string? filename, int line, string? script, Exception inner)
-            : base("Error Executing JavaScript Code for " + member + "\nLine " + line + " of " + filename + "\n" + script + "\n", inner)
-        {
-            Member = member;
-            FileName = filename;
-            LineNumber = line;
-            Script = script;
-        }
+        public int LineNumber { get; private set; } = line;
     }
 
-    internal sealed class JavaScriptInnerException : Exception
+    internal sealed class JavaScriptInnerException(string message, string stack) : Exception(message)
     {
-        public string JavaScriptStackTrace { get; private set; } // TODO Use Enum of JS error types https://www.w3schools.com/js/js_errors.asp
-
-        public JavaScriptInnerException(string message, string stack)
-            : base(message)
-        {
-            JavaScriptStackTrace = stack;
-        }
+        public string JavaScriptStackTrace { get; private set; } = stack;
     }
 
     internal partial class NativeMethods

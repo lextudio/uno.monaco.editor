@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>

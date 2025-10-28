@@ -20,14 +20,12 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "auto":
-                    return FoldingStrategy.Auto;
-                case "indentation":
-                    return FoldingStrategy.Indentation;
-            }
-            throw new Exception("Cannot unmarshal type FoldingStrategy");
+                "auto" => FoldingStrategy.Auto,
+                "indentation" => FoldingStrategy.Indentation,
+                _ => throw new Exception("Cannot unmarshal type FoldingStrategy"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

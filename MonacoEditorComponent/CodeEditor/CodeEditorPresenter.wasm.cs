@@ -52,10 +52,7 @@ namespace Monaco
             get => ParentCodeEditor?.IsSettingValue ?? false;
             set
             {
-                if (ParentCodeEditor is not null)
-                {
-                    ParentCodeEditor.IsSettingValue = value;
-                }
+                ParentCodeEditor?.IsSettingValue = value;
             }
         }
 
@@ -65,7 +62,7 @@ namespace Monaco
         /// <inheritdoc />
         public global::System.Uri Source
         {
-            get => new global::System.Uri(NativeMethods.GetSrc(_element.ElementId));
+            get => new(NativeMethods.GetSrc(_element.ElementId));
             set
             {
                 //var path = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_APP_BASE");

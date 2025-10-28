@@ -1,9 +1,8 @@
 ﻿using Monaco.Languages;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using Windows.Foundation;
 
 namespace Monaco
 {
@@ -11,18 +10,14 @@ namespace Monaco
     /// Helper to static Monaco.Languages Namespace methods.
     /// https://microsoft.github.io/monaco-editor/api/modules/monaco.languages.html
     /// </summary>
-    public sealed class LanguagesHelper
+    [method: Obsolete("Use <Editor Instance>.Languages.* instead of constructing your own LanguagesHelper.")]
+    [method: EditorBrowsable(EditorBrowsableState.Never)]    /// <summary>
+                                                             /// Helper to static Monaco.Languages Namespace methods.
+                                                             /// https://microsoft.github.io/monaco-editor/api/modules/monaco.languages.html
+                                                             /// </summary>
+    public sealed class LanguagesHelper(CodeEditor editor)
     {
-        private readonly WeakReference<CodeEditor> _editor;
-
-        [Obsolete("Use <Editor Instance>.Languages.* instead of constructing your own LanguagesHelper.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public LanguagesHelper(CodeEditor editor) // TODO: Make Internal later.
-        {
-            // We need the editor component in order to execute JavaScript within 
-            // the WebView environment to retrieve data (even though this Monaco class is static).
-            _editor = new WeakReference<CodeEditor>(editor);
-        }
+        private readonly WeakReference<CodeEditor> _editor = new(editor);
 
         public async Task<IList<ILanguageExtensionPoint>?> GetLanguagesAsync()
         {
@@ -71,7 +66,7 @@ namespace Monaco
                 });
 
                 // link:registerCodeActionProvider.ts:registerCodeActionProvider
-                await editor.InvokeScriptAsync("registerCodeActionProvider", new object[] { languageId }).AsAsyncAction();
+                await editor.InvokeScriptAsync("registerCodeActionProvider", [languageId]).AsAsyncAction();
             }
         }
 
@@ -116,7 +111,7 @@ namespace Monaco
                 });
 
                 // link:registerCodeLensProvider.ts:registerCodeLensProvider
-                await editor.InvokeScriptAsync("registerCodeLensProvider", new object[] { languageId }).AsAsyncAction();
+                await editor.InvokeScriptAsync("registerCodeLensProvider", [languageId]).AsAsyncAction();
             }
         }
 
@@ -164,7 +159,7 @@ namespace Monaco
                 });
 
                 // link:registerColorProvider.ts:registerColorProvider
-                await editor.InvokeScriptAsync("registerColorProvider", new object[] { languageId }).AsAsyncAction();
+                await editor.InvokeScriptAsync("registerColorProvider", [languageId]).AsAsyncAction();
             }
         }
 
@@ -219,7 +214,7 @@ namespace Monaco
                 });
 
                 // link:registerCompletionItemProvider.ts:registerCompletionItemProvider
-                await editor.InvokeScriptAsync("registerCompletionItemProvider", new object[] { languageId, provider.TriggerCharacters }).AsAsyncAction();
+                await editor.InvokeScriptAsync("registerCompletionItemProvider", [languageId, provider.TriggerCharacters]).AsAsyncAction();
             }
         }
 
@@ -232,7 +227,7 @@ namespace Monaco
                 // TODO: Add Incremented Id so that we can register multiple providers per language?
                 editor._parentAccessor.RegisterEvent("HoverProvider" + languageId, async (args) =>
                 {
-                    System.Diagnostics.Debug.WriteLine($"Hover provider.......... {args!=null}");
+                    System.Diagnostics.Debug.WriteLine($"Hover provider.......... {args != null}");
                     if (args != null && args.Length >= 1)
                     {
                         if (editor.GetModel() is { } model

@@ -58,6 +58,8 @@
 	<ItemGroup>
 
 		<Content Include="CodeEditor\CodeEditor.html" />
+
+		<Content Include="Monaco\.editorconfig" />
 		<Content Include="tsconfig.json" />
 		
 		<Content Include="monaco-editor\*.*" />

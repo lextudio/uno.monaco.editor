@@ -15,7 +15,7 @@ namespace MonacoEditorTestApp.Actions
         public float ContextMenuOrder => 1.5f;
         public string Id => "meta-test-action";
         public string? KeybindingContext => null;
-        public int[] Keybindings => new int[] { Monaco.KeyMod.Chord(Monaco.KeyMod.CtrlCmd | Monaco.KeyCode.KEY_K, Monaco.KeyMod.CtrlCmd | Monaco.KeyCode.KEY_M) };
+        public int[] Keybindings => [Monaco.KeyMod.Chord(Monaco.KeyMod.CtrlCmd | Monaco.KeyCode.KEY_K, Monaco.KeyMod.CtrlCmd | Monaco.KeyCode.KEY_M)];
         public string? Label => "Test Action";
         public string? Precondition => null;
 

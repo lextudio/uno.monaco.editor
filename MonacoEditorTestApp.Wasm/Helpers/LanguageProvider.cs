@@ -11,7 +11,7 @@ namespace MonacoEditorTestApp.Helpers
 {
     public class LanguageProvider : CompletionItemProvider
     {
-        public string[] TriggerCharacters => new string[] { "c" };
+        public string[] TriggerCharacters => ["c"];
 
         public async Task<CompletionList> ProvideCompletionItemsAsync(IModel document, Position position, CompletionContext context)
         {
@@ -21,34 +21,34 @@ namespace MonacoEditorTestApp.Helpers
             {
                 return new CompletionList()
                 {
-                    Suggestions = new[]
-                    {
+                    Suggestions =
+                    [
                             new CompletionItem("booyah", "booyah", CompletionItemKind.Folder),
                             new CompletionItem("booboo", "booboo", CompletionItemKind.File),
-                        }
+                        ]
                 };
             }
             else if (context.TriggerKind == CompletionTriggerKind.TriggerCharacter)
             {
                 return new CompletionList()
                 {
-                    Suggestions = new[]
-                    {
+                    Suggestions =
+                    [
                             new CompletionItem("class", "class", CompletionItemKind.Keyword),
                             new CompletionItem("cookie", "cookie", CompletionItemKind.Reference),
-                        }
+                        ]
                 };
             }
 
             return new CompletionList()
             {
-                Suggestions = new[]
-                {
+                Suggestions =
+                [
                         new CompletionItem("foreach", "foreach (var ${2:element} in ${1:array}) {\n\t$0\n}", CompletionItemKind.Snippet)
                         {
                             InsertTextRules = CompletionItemInsertTextRule.InsertAsSnippet
                         }
-                    }
+                    ]
             };
         }
 

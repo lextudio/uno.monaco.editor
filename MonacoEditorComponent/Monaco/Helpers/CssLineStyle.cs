@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
+
 using System.Text;
+
 using Windows.UI;
 
 namespace Monaco.Helpers
@@ -31,7 +32,7 @@ namespace Monaco.Helpers
 
         public string ToCss()
         {
-            StringBuilder output = new StringBuilder(40);
+            StringBuilder output = new(40);
             if (BackgroundColor.HasValue)
             {
                 //// we need to use rgba function like this due to EdgeHTML, otherwise we could use #RRGGBBAA which would be easier using #{n:X2}...

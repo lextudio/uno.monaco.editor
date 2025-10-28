@@ -11,10 +11,10 @@ using ReadOnlyArray = Monaco.Helpers.Stubs.ReadOnlyArrayAttribute;
 
 namespace Monaco
 {
-    public sealed class IMarkdownString
+    public sealed class IMarkdownString(string? svalue, bool isTrusted)
     {
         [JsonProperty("isTrusted")]
-        public bool IsTrusted { get; set; }
+        public bool IsTrusted { get; set; } = isTrusted;
         [JsonProperty("supportThemeIcons", NullValueHandling =NullValueHandling.Ignore)]
         public bool? SupportThemeIcons { get; set; }
 
@@ -22,15 +22,9 @@ namespace Monaco
         public IDictionary<string, Uri>? Uris { get; set; }
 
         [JsonProperty("value")]
-        public string? Value { get; set; }
+        public string? Value { get; set; } = svalue;
 
         public IMarkdownString(string? svalue) : this(svalue, false) { }
-
-        public IMarkdownString(string? svalue, bool isTrusted)
-        {
-            Value = svalue;
-            IsTrusted = isTrusted;
-        }
     }
 
     public static class MarkdownStringExtensions
@@ -54,7 +48,7 @@ namespace Monaco
 
         public static IMarkdownString[] ToMarkdownString(this string[] values, bool isTrusted)
         {
-            return values.Select(value => new IMarkdownString(value, isTrusted)).ToArray();
+            return [.. values.Select(value => new IMarkdownString(value, isTrusted))];
         }
     }
 }

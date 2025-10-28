@@ -13,7 +13,7 @@ namespace Monaco.Editor
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private readonly Dictionary<string, object?> _propertyBackingDictionary = new();
+        private readonly Dictionary<string, object?> _propertyBackingDictionary = [];
 
         private T? GetPropertyValue<T>([CallerMemberName] string? propertyName = null)
         {

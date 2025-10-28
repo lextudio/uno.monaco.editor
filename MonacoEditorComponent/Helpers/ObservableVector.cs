@@ -15,11 +15,11 @@ namespace Collections.Generic
 
 		// Cached EventArgs
 
-		private static readonly ChangedArgs ResetArgs = new ChangedArgs(CollectionChange.Reset, 0);
+		private static readonly ChangedArgs ResetArgs = new(CollectionChange.Reset, 0);
 
-		private static readonly PropertyChangedEventArgs IndexerArgs = new PropertyChangedEventArgs(IndexerName);
-		private static readonly PropertyChangedEventArgs ItemsArgs = new PropertyChangedEventArgs(nameof(Items));
-		private static readonly PropertyChangedEventArgs CountArgs = new PropertyChangedEventArgs(nameof(Count));
+		private static readonly PropertyChangedEventArgs IndexerArgs = new(IndexerName);
+		private static readonly PropertyChangedEventArgs ItemsArgs = new(nameof(Items));
+		private static readonly PropertyChangedEventArgs CountArgs = new(nameof(Count));
 
 		// Events
 
@@ -95,16 +95,10 @@ namespace Collections.Generic
 
 		// Default implementation of IVectorChangedEventArgs
 
-		protected class ChangedArgs : IVectorChangedEventArgs
+		protected class ChangedArgs(CollectionChange change, uint index) : IVectorChangedEventArgs
 		{
-			public uint Index { get; }
-			public CollectionChange CollectionChange { get; }
-
-			public ChangedArgs(CollectionChange change, uint index)
-			{
-				this.Index = index;
-				this.CollectionChange = change;
-			}
-		}
+            public uint Index { get; } = index;
+            public CollectionChange CollectionChange { get; } = change;
+        }
 	}
 }

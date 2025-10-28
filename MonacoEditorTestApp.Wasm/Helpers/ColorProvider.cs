@@ -22,7 +22,7 @@ namespace MonacoEditorTestApp.Helpers
         {
             return new ColorPresentation[]
             {
-                new ColorPresentation(colorInfo.Color.ToString()),
+                new(colorInfo.Color.ToString()),
             }.AsEnumerable();
         }
 

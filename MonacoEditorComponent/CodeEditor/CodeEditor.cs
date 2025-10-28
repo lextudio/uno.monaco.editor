@@ -48,9 +48,7 @@ namespace Monaco
 
         private static void OnIsEditorLoadedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            CodeEditor @this = (CodeEditor)d;
 
-            // @this._view.Visibility = (bool)e.NewValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         /// <summary>
@@ -69,13 +67,14 @@ namespace Monaco
             DefaultStyleKey = typeof(CodeEditor);
             if (ReadLocalValue(OptionsProperty) == DependencyProperty.UnsetValue)
             {
-                Options = new StandaloneEditorConstructionOptions();
-
-                // Set Pass-Thru Properties
-                Options.GlyphMargin = HasGlyphMargin;
-                Options.Language = CodeLanguage;
-                Options.ReadOnly = ReadOnly;
-                Options.AutomaticLayout = true;
+                Options = new StandaloneEditorConstructionOptions
+                {
+                    // Set Pass-Thru Properties
+                    GlyphMargin = HasGlyphMargin,
+                    Language = CodeLanguage,
+                    ReadOnly = ReadOnly,
+                    AutomaticLayout = true
+                };
             }
 
             // Initialize this here so property changed event will fire and register collection changed event.
@@ -113,7 +112,7 @@ namespace Monaco
         {
             if (!_initialized || _view == null) return;
 
-            if (!(sender is StandaloneEditorConstructionOptions options)) return;
+            if (sender is not StandaloneEditorConstructionOptions options) return;
             if (e.PropertyName == nameof(StandaloneEditorConstructionOptions.Language)
                 && options.Language is not null)
             {

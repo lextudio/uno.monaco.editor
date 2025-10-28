@@ -18,14 +18,12 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "insert":
-                    return InsertMode.Insert;
-                case "replace":
-                    return InsertMode.Replace;
-            }
-            throw new Exception("Cannot unmarshal type InsertMode");
+                "insert" => InsertMode.Insert,
+                "replace" => InsertMode.Replace,
+                _ => throw new Exception("Cannot unmarshal type InsertMode"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Uno;
-using Uno.Extensions;
+
 using Uno.Extensions.Specialized;
 
 namespace Monaco.Helpers;
 
 partial class ParentAccessor
 {
-    private static ConditionalWeakTable<object, ParentAccessor> _instances = new();
+    private static readonly ConditionalWeakTable<object, ParentAccessor> _instances = [];
 
     partial void PartialCtor(ICodeEditorPresenter parent)
     {
@@ -27,7 +22,7 @@ partial class ParentAccessor
         if (_instances.TryGetValue(managedOwner, out var parentAccessor))
         {
             var json = Desanitize(value) ?? "";
-            json = json.Replace(@"\\",@"\");
+            json = json.Replace(@"\\", @"\");
             json = json.Trim('"');
             json = json.Replace(@"\r\n", Environment.NewLine);
             json = json.Replace(@"\t", "\t");
@@ -66,7 +61,7 @@ partial class ParentAccessor
         var replacements = @"%&\""'{}:,";
         for (var i = 0; i < replacements.Length; i++)
         {
-            jsonString = jsonString.Replace(replacements[i]+"", "%" + (int)replacements[i]);
+            jsonString = jsonString.Replace(replacements[i] + "", "%" + (int)replacements[i]);
         }
         return jsonString;
     }
@@ -120,19 +115,19 @@ partial class ParentAccessor
 
     private static string? Desanitize(string? parameter)
     {
-       // System.Diagnostics.Debug.WriteLine($"Encoded String: {parameter}");
+        // System.Diagnostics.Debug.WriteLine($"Encoded String: {parameter}");
         if (parameter == null) return parameter;
         var replacements = @"&\""'{}:,%";
-       // System.Diagnostics.Debug.WriteLine($"Replacements: >{replacements}<");
+        // System.Diagnostics.Debug.WriteLine($"Replacements: >{replacements}<");
         for (int i = 0; i < replacements.Length; i++)
         {
-         //   System.Diagnostics.Debug.WriteLine($"Replacing: >%{(int)replacements[i]}< with >{(char)replacements[i] + "" }< ");
+            //   System.Diagnostics.Debug.WriteLine($"Replacing: >%{(int)replacements[i]}< with >{(char)replacements[i] + "" }< ");
             parameter = parameter.Replace($"%{(int)replacements[i]}", (char)replacements[i] + "");
         }
 
         parameter = parameter.Replace(@"\\""", @"""");
 
-       // System.Diagnostics.Debug.WriteLine($"Decoded String: {parameter}");
+        // System.Diagnostics.Debug.WriteLine($"Decoded String: {parameter}");
         return parameter;
     }
 
@@ -141,7 +136,7 @@ partial class ParentAccessor
     {
         if (_instances.TryGetValue(managedOwner, out var logger))
         {
-            var resultString = await logger.CallEvent(name, parameters.Select(s => Desanitize(s) ?? "").Where(p => p is not null).ToArray());
+            var resultString = await logger.CallEvent(name, [.. parameters.Select(s => Desanitize(s) ?? "").Where(p => p is not null)]);
             return Desanitize(resultString);
         }
         else

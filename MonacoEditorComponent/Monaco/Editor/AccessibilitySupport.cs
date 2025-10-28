@@ -18,16 +18,13 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "auto":
-                    return AccessibilitySupport.Auto;
-                case "off":
-                    return AccessibilitySupport.Off;
-                case "on":
-                    return AccessibilitySupport.On;
-            }
-            throw new Exception("Cannot unmarshal type AccessibilitySupport");
+                "auto" => AccessibilitySupport.Auto,
+                "off" => AccessibilitySupport.Off,
+                "on" => AccessibilitySupport.On,
+                _ => throw new Exception("Cannot unmarshal type AccessibilitySupport"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

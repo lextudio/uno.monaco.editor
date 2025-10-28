@@ -18,18 +18,14 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "bottom":
-                    return SnippetSuggestions.Bottom;
-                case "inline":
-                    return SnippetSuggestions.Inline;
-                case "none":
-                    return SnippetSuggestions.None;
-                case "top":
-                    return SnippetSuggestions.Top;
-            }
-            throw new Exception("Cannot unmarshal type SnippetSuggestions");
+                "bottom" => SnippetSuggestions.Bottom,
+                "inline" => SnippetSuggestions.Inline,
+                "none" => SnippetSuggestions.None,
+                "top" => SnippetSuggestions.Top,
+                _ => throw new Exception("Cannot unmarshal type SnippetSuggestions"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

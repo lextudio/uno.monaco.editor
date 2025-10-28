@@ -8,21 +8,15 @@ namespace Monaco.Languages
     /// <summary>
     /// A color range is a range in a text model which represents a color.
     /// </summary>
-    public sealed class ColorInformation
+    public sealed class ColorInformation(Color color, IRange? range)
     {
         [JsonProperty("color")]
         [JsonConverter(typeof(ColorConverter))]
-        public Color Color { get; set; }
+        public Color Color { get; set; } = color;
 
         [JsonProperty("range")]
         [JsonConverter(typeof(InterfaceToClassConverter<IRange, Range>))]
-        public IRange? Range { get; set; }
-
-        public ColorInformation(Color color, IRange? range)
-        {
-            Color = color;
-            Range = range;
-        }
+        public IRange? Range { get; set; } = range;
     }
 
     /// <summary>
@@ -34,7 +28,7 @@ namespace Monaco.Languages
 
         public override object? ReadJson(JsonReader reader, Type t, object? existingValue, JsonSerializer serializer)
         {
-            Color color = new Color();
+            Color color = new();
 
             if (reader.Read())
             {

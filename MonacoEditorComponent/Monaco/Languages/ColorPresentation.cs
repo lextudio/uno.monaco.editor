@@ -7,7 +7,7 @@ namespace Monaco.Languages
     /// String representations for a color.
     /// <seealso href="https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.icolorpresentation.html">monaco.languages.IColorPresentation</seealso>
     /// </summary>
-    public sealed class ColorPresentation
+    public sealed class ColorPresentation(string label)
     {
         /// <summary>
         /// An optional array of additional text edits that are applied when
@@ -22,14 +22,9 @@ namespace Monaco.Languages
         /// By default this is also the text that is inserted when selecting this color presentation.
         /// </summary>
         [JsonProperty("label")]
-        public string? Label { get; set; }
+        public string? Label { get; set; } = label;
 
         [JsonProperty("textEdit", NullValueHandling = NullValueHandling.Ignore)]
         public ISingleEditOperation? TextEdit { get; set; }
-
-        public ColorPresentation(string label)
-        {
-            Label = label;
-        }
     }
 }

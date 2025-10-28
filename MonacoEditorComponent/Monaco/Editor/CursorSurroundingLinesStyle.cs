@@ -20,14 +20,12 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "all":
-                    return CursorSurroundingLinesStyle.All;
-                case "default":
-                    return CursorSurroundingLinesStyle.Default;
-            }
-            throw new Exception("Cannot unmarshal type CursorSurroundingLinesStyle");
+                "all" => CursorSurroundingLinesStyle.All,
+                "default" => CursorSurroundingLinesStyle.Default,
+                _ => throw new Exception("Cannot unmarshal type CursorSurroundingLinesStyle"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

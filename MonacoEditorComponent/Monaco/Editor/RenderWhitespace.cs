@@ -19,18 +19,14 @@ namespace Monaco.Editor
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            switch (value)
+            return value switch
             {
-                case "all":
-                    return RenderWhitespace.All;
-                case "boundary":
-                    return RenderWhitespace.Boundary;
-                case "none":
-                    return RenderWhitespace.None;
-                case "selection":
-                    return RenderWhitespace.Selection;
-            }
-            throw new Exception("Cannot unmarshal type RenderWhitespace");
+                "all" => RenderWhitespace.All,
+                "boundary" => RenderWhitespace.Boundary,
+                "none" => RenderWhitespace.None,
+                "selection" => RenderWhitespace.Selection,
+                _ => throw new Exception("Cannot unmarshal type RenderWhitespace"),
+            };
         }
 
         public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

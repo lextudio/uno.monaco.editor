@@ -1,22 +1,18 @@
-﻿using Monaco;
+﻿using Microsoft.UI;
+using Microsoft.UI.Text;
+
+using Monaco;
 using Monaco.Editor;
 using Monaco.Helpers;
+
 using MonacoEditorTestApp.Actions;
 using MonacoEditorTestApp.Helpers;
-using System;
+
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Core;
+
 using Windows.UI.Popups;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
-using Microsoft.UI.Text;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -41,34 +37,34 @@ namespace MonacoEditorTestApp
         private ContextKey? _myCondition;
 
         #region CSS Style Objects
-        private readonly CssLineStyle CssLineDarkRed = new CssLineStyle()
+        private readonly CssLineStyle CssLineDarkRed = new()
         {
             BackgroundColor = Colors.DarkRed,
         };
 
-        private readonly CssLineStyle CssLineAliceBlue = new CssLineStyle()
+        private readonly CssLineStyle CssLineAliceBlue = new()
         {
             BackgroundColor = Colors.AliceBlue
         };
 
-        private readonly CssInlineStyle CssInlineWhiteBold = new CssInlineStyle()
+        private readonly CssInlineStyle CssInlineWhiteBold = new()
         {
             ForegroundColor = Colors.White,
             FontWeight = FontWeights.Bold,
             FontStyle = FontStyle.Italic
         };
 
-        private readonly CssInlineStyle CssInlineStrikeThrough = new CssInlineStyle()
+        private readonly CssInlineStyle CssInlineStrikeThrough = new()
         {
             TextDecoration = TextDecoration.LineThrough
         };
 
-        private readonly CssGlyphStyle CssGlyphError = new CssGlyphStyle()
+        private readonly CssGlyphStyle CssGlyphError = new()
         {
             GlyphImage = new System.Uri("ms-appx-web:///Icons/error.png")
         };
 
-        private readonly CssGlyphStyle CssGlyphWarning = new CssGlyphStyle()
+        private readonly CssGlyphStyle CssGlyphWarning = new()
         {
             GlyphImage = new System.Uri("ms-appx-web:///Icons/warning.png")
         };
@@ -132,7 +128,7 @@ namespace MonacoEditorTestApp
                     WinRT.Interop.InitializeWithWindow.Initialize(md, WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow));
                     await md.ShowAsync();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
@@ -151,7 +147,8 @@ namespace MonacoEditorTestApp
 
             _myCondition = await Editor.CreateContextKeyAsync("MyCondition", false);
 
-            await Editor.AddCommandAsync(KeyCode.F5, async (args) => {
+            await Editor.AddCommandAsync(KeyCode.F5, async (args) =>
+            {
                 var md = new MessageDialog("You Hit F5!");
                 WinRT.Interop.InitializeWithWindow.Initialize(md, WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow));
                 await md.ShowAsync();
@@ -369,7 +366,7 @@ namespace MonacoEditorTestApp
 
         private async void ButtonSetMarker_Click(object sender, RoutedEventArgs e)
         {
-            if ((await Editor.GetModelMarkersAsync()).Count() == 0)
+            if (!(await Editor.GetModelMarkersAsync()).Any())
             {
                 Editor.Markers.Add(
                     new MarkerData()
@@ -400,7 +397,7 @@ namespace MonacoEditorTestApp
             else
             {
                 //Editor.Markers.Clear();
-                await Editor.SetModelMarkersAsync("CodeEditor", Array.Empty<IMarkerData>());
+                await Editor.SetModelMarkersAsync("CodeEditor", []);
             }
         }
 
