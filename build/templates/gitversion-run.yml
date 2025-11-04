@@ -5,7 +5,7 @@ steps:
 
   - pwsh: |
       dotnet tool uninstall nbgv -g
-      dotnet tool install nbgv -g --version 3.6.139
+      dotnet tool install nbgv -g --version 3.8.118
       nbgv cloud -a
     displayName: Version with NBGV
     name: NBGV
@@ -20,7 +20,7 @@ steps:
     name: NBGV_AssemblyInformationalVersion
 
   - powershell: | 
-      $outputFile="$(System.artifactsdirectory)/git_variables"
+      $outputFile="$(System.ArtifactsDirectory)/git_variables"
       echo "##vso[task.setvariable variable=NBGV_CloudBuildNumber]$(NBGV_CloudBuildNumber)" > $outputFile
       echo "##vso[task.setvariable variable=NBGV_VersionFileFound]$(NBGV_VersionFileFound)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_AssemblyVersion]$(NBGV_AssemblyVersion)" >> $outputFile
@@ -52,10 +52,7 @@ steps:
       echo "##vso[task.setvariable variable=NBGV_SemVer1NumericIdentifierPadding]$(NBGV_SemVer1NumericIdentifierPadding)" >> $outputFile
     displayName: Generate NBGV Variables
 
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
+  - publish: $(System.ArtifactsDirectory)
+    artifact: nbgv_cache
     displayName: Publish variables
-    inputs:
-      PathtoPublish: $(System.artifactsdirectory)
-      ArtifactName: nbgv_cache
-      ArtifactType: Container
+   
