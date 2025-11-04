@@ -2,7 +2,7 @@ jobs:
 - job: Windows
 
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
 
   steps:
   - template: build/templates/gitversion-run.yml
@@ -20,23 +20,27 @@ jobs:
     inputs:
       command: build      
       projects: MonacoEditorComponent.slnx
-      arguments:  -c Release -p:PackageOutputPath=$(build.artifactstagingdirectory)/nuget /bl:$(build.artifactstagingdirectory)/build.binlog 
+      arguments:  -c Release -p:ArtifactsPath=$(Build.ArtifactStagingDirectory) /bl:$(Build.ArtifactStagingDirectory)/log/build.binlog 
 
-  - task: PowerShell@2
-    displayName: Authenticode Sign Packages
-    inputs:
-      filePath: build/Sign-Package.ps1
-    env:
-      SignClientUser: $(SignClientUser)
-      SignClientSecret: $(SignClientSecret)
-      SignPackageName: "uno.monaco-editor-uwp"
-      SignPackageDescription: "uno.monaco-editor-uwp"
-      ArtifactDirectory: $(build.artifactstagingdirectory)
-    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+  # - task: PowerShell@2
+  #   displayName: Authenticode Sign Packages
+  #   inputs:
+  #     filePath: build/Sign-Package.ps1
+  #   env:
+  #     SignClientUser: $(SignClientUser)
+  #     SignClientSecret: $(SignClientSecret)
+  #     SignPackageName: "uno.monaco-editor-uwp"
+  #     SignPackageDescription: "uno.monaco-editor-uwp"
+  #     ArtifactDirectory: $(Build.ArtifactStagingDirectory)
+  #   condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
-  - task: PublishBuildArtifacts@1
+  - publish: $(Build.ArtifactStagingDirectory)/package
+    displayName: Publish Build Logs
     condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uno-monaco-editor-uwp-drop
-      ArtifactType: Container
+    artifact: packages
+
+  - publish: $(Build.ArtifactStagingDirectory)/log
+    displayName: Publish Build Logs
+    condition: always()
+    artifact: logs
+
