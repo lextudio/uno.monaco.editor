@@ -3,13 +3,13 @@ type NumberCallback = (parameter: any) => void;
 
 const initializeMonacoEditor = (managedOwner: any, element: any) => {
     {
-        console.debug("Grabbing Monaco Options");
+      //  console.debug("Grabbing Monaco Options");
 
         var opt = {}
     };
 
-    console.debug("Getting Host container");
-    console.debug("Creating Editor");
+    //console.debug("Getting Host container");
+    //console.debug("Creating Editor");
     const editor = monaco.editor.create(element, opt);
     var editorContext = EditorContext.registerEditorForElement(element, editor);
 
@@ -18,11 +18,11 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
     (<any>editorContext).Accessor = new ParentAccessor(managedOwner);
     (<any>editorContext).Theme = new ThemeListener(managedOwner);
 
-    console.debug("Getting Editor model");
+    //console.debug("Getting Editor model");
     editorContext.model = editor.getModel();
 
     // Listen for Content Changes
-    console.debug("Listening for changes in the editor model - " + (!editorContext.model));
+    //console.debug("Listening for changes in the editor model - " + (!editorContext.model));
 
     editorContext.model.onDidChangeContent((event) => {
         {
@@ -31,7 +31,7 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
     });
 
     // Listen for Selection Changes
-    console.debug("Listening for changes in the editor selection");
+    //console.debug("Listening for changes in the editor selection");
     editor.onDidChangeCursorSelection((event) => {
         {
             if (!editorContext.modifingSelection) {
@@ -44,7 +44,7 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
     });
 
     // Set theme
-    console.debug("Getting parent theme value");
+    //console.debug("Getting parent theme value");
     let theme = getParentJsonValue(element, "RequestedTheme");
     theme = {
         "0": "Default",
@@ -52,19 +52,19 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
         "2": "Dark"
     }
     [theme];
-    console.debug("Current theme value - " + theme);
+    //console.debug("Current theme value - " + theme);
     if (theme == "Default") {
         {
-            console.debug("Loading default theme");
+    //        console.debug("Loading default theme");
 
             theme = getThemeCurrentThemeName(element);
         }
     }
-    console.debug("Changing theme");
+  //  console.debug("Changing theme");
     changeTheme(element, theme, getThemeIsHighContrast(element));
 
     // Update Monaco Size when we receive a window resize event
-    console.debug("Listen for resize events on the window and resize the editor");
+//    console.debug("Listen for resize events on the window and resize the editor");
     window.addEventListener("resize", () => {
         {
             editor.layout();
@@ -75,10 +75,10 @@ const initializeMonacoEditor = (managedOwner: any, element: any) => {
     document.body.style.overflow = 'hidden';
 
     // Callback to Parent that we're loaded
-    console.debug("Loaded Monaco");
+ //   console.debug("Loaded Monaco");
     editorContext.Accessor.callAction("Loaded");
 
-    console.debug("Ending Monaco Load");
+   // console.debug("Ending Monaco Load");
 };
 
 class DebugLogger {
@@ -134,7 +134,7 @@ class ThemeListener {
 }
 
 globalThis.createMonacoEditor = async (managedOwner: any, elementId: string, basePath: string) => {
-    console.debug("Create dynamic style element");
+  //  console.debug("Create dynamic style element");
     var head = document.head || document.getElementsByTagName('head')[0];
     var style = document.createElement('style');
     style.id = 'dynamic';
@@ -145,7 +145,7 @@ globalThis.createMonacoEditor = async (managedOwner: any, elementId: string, bas
     await ParentAccessor.setup();
     await ThemeListener.setup();
 
-    console.debug("Starting Monaco Load");
+//    console.debug("Starting Monaco Load");
 
     (<any>window).require.config({ paths: { 'vs': `${basePath}/MonacoEditorComponent/monaco-editor/min/vs` } });
     (<any>window).require(['vs/editor/editor.main'], function () {
