@@ -20,15 +20,6 @@ env:
   NUGET_XMLDOC_MODE: skip
   ARTIFACTS_DIR: artifacts
 
-# Required secrets:
-#   SIGN_AZURE_CLIENT_ID
-#   SIGN_AZURE_TENANT_ID
-#   SIGN_AZURE_SUBSCRIPTION_ID
-#   SIGN_KEY_VAULT_URL
-#   SIGN_KEY_VAULT_CERTIFICATE_ID
-#   UNO_NUGET_FEED_API_KEY
-#   NUGET_ORG_API_KEY
-
 jobs:
   build:
     name: Build
@@ -63,18 +54,18 @@ jobs:
 
       - name: Prepare artifacts directory
         run: |
-          rm -rf "$ARTIFACTS_DIR"
-          mkdir -p "$ARTIFACTS_DIR/log"
+          rm -rf "${{ env.ARTIFACTS_DIR }}"
+          mkdir -p "${{ env.ARTIFACTS_DIR }}/log"
 
       - name: Build solution
-        run: dotnet build MonacoEditorComponent.slnx -c Release -p:ArtifactsPath="$ARTIFACTS_DIR" /bl:"$ARTIFACTS_DIR/log/build.binlog"
+        run: dotnet build MonacoEditorComponent.slnx -c Release -p:ArtifactsPath="${{ env.ARTIFACTS_DIR }}" /bl:"${{ env.ARTIFACTS_DIR }}/log/build.binlog"
 
       - name: Upload packages
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: NuGet
-          path: artifacts/package/release
+          path: ${{ env.ARTIFACTS_DIR }}/package/release
           if-no-files-found: warn
 
       - name: Upload logs
@@ -82,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logs
-          path: artifacts/log
+          path: ${{ env.ARTIFACTS_DIR }}/log
           if-no-files-found: warn
 
   sign:
@@ -140,6 +131,7 @@ jobs:
   publish_dev:
     name: Publish Dev
     runs-on: ubuntu-latest
+    environment: Development
     needs: sign
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
@@ -159,7 +151,7 @@ jobs:
   publish_release_uno:
     name: Publish Internal Feed
     runs-on: ubuntu-latest
-    environment: Stable
+    environment: Production
     needs: sign
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
     steps:
@@ -174,7 +166,7 @@ jobs:
   publish_release_nuget_org:
     name: Publish Production
     runs-on: ubuntu-latest
-    environment: Stable
+    environment: Production
     needs: publish_release_uno
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
     permissions:
