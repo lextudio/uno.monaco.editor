@@ -15,8 +15,8 @@
     <Authors>Uno Platform</Authors>
     <Copyright>Copyright (C) 2015-$([System.DateTime]::UtcNow.Year) Uno Platform inc. - all rights reserved</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>    
-		<RepositoryUrl>https://github.com/unoplatform/uno.monaco-editor-uwp</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/unoplatform/uno.monaco-editor-uwp</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/unoplatform/uno.monaco.editor</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/unoplatform/uno.monaco.editor</PackageProjectUrl>
     <PackageTags>wasm monaco editor controls</PackageTags>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
