@@ -3,11 +3,11 @@ name: CI
 on:
   push:
     branches:
-      - uno
+      - main
       - release/*/*
   pull_request:
     branches:
-      - uno
+      - main
       - release/*/*
   workflow_dispatch:
 
@@ -89,7 +89,7 @@ jobs:
     name: Sign
     runs-on: windows-latest
     needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/uno' || startsWith(github.ref, 'refs/heads/release/'))
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
     environment: PackageSign
     permissions:
       contents: read
@@ -103,6 +103,12 @@ jobs:
         with:
           name: NuGet
           path: ${{ env.ARTIFACTS_DIR }}
+
+      - name: Export relative artifacts path
+        shell: pwsh
+        run: |
+          $relativePath = [System.IO.Path]::GetRelativePath((Get-Location), "${{ env.ARTIFACTS_DIR }}")
+          "ARTIFACTS_DIR_REL=$relativePath" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -121,10 +127,9 @@ jobs:
       - name: Sign artifacts
         shell: pwsh
         run: >-
-          ./sign code azure-key-vault ${{ env.ARTIFACTS_DIR }}/**/*.nupkg --publisher-name "uno.monaco-editor-uwp"
+          ./sign code azure-key-vault "${{ env.ARTIFACTS_DIR_REL }}/**/*.nupkg" --publisher-name "uno.monaco.editor"
           --description "Uno Monaco Editor UWP"
           --description-url "https://github.com/${{ github.repository }}"
-          --azure-key-vault-managed-identity true
           --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
           --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE_ID }}"
           --verbosity information
@@ -140,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Development
     needs: sign
-    if: github.event_name == 'push' && github.ref == 'refs/heads/uno'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
