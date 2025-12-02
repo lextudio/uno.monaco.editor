@@ -3,11 +3,11 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - uno
       - release/*/*
   pull_request:
     branches:
-      - main
+      - uno
       - release/*/*
   workflow_dispatch:
 
@@ -18,16 +18,16 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: 1
   NUGET_XMLDOC_MODE: skip
-  ARTIFACTS_DIR: artifacts
+  ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
 
-# Required secrets:
-#   SIGN_AZURE_CLIENT_ID
-#   SIGN_AZURE_TENANT_ID
-#   SIGN_AZURE_SUBSCRIPTION_ID
-#   SIGN_KEY_VAULT_URL
-#   SIGN_KEY_VAULT_CERTIFICATE_ID
-#   UNO_NUGET_FEED_API_KEY
-#   NUGET_ORG_API_KEY
+# Required secrets for signing and publishing jobs:
+# - SIGN_AZURE_CLIENT_ID: Azure client ID for code signing
+# - SIGN_AZURE_TENANT_ID: Azure tenant ID for code signing
+# - SIGN_AZURE_SUBSCRIPTION_ID: Azure subscription ID for code signing
+# - SIGN_KEY_VAULT_URL: Azure Key Vault URL for code signing
+# - SIGN_KEY_VAULT_CERTIFICATE_ID: Key Vault certificate ID for code signing
+# - UNO_NUGET_FEED_API_KEY: API key for Uno NuGet feed publishing
+# - NUGET_ORG_API_KEY: API key for NuGet.org publishing
 
 jobs:
   build:
@@ -63,18 +63,18 @@ jobs:
 
       - name: Prepare artifacts directory
         run: |
-          rm -rf "$ARTIFACTS_DIR"
-          mkdir -p "$ARTIFACTS_DIR/log"
+          rm -rf "${{ env.ARTIFACTS_DIR }}"
+          mkdir -p "${{ env.ARTIFACTS_DIR }}/log"
 
       - name: Build solution
-        run: dotnet build MonacoEditorComponent.slnx -c Release -p:ArtifactsPath="$ARTIFACTS_DIR" /bl:"$ARTIFACTS_DIR/log/build.binlog"
+        run: dotnet build MonacoEditorComponent.slnx -c Release -p:ArtifactsPath="${{ env.ARTIFACTS_DIR }}" /bl:"${{ env.ARTIFACTS_DIR }}/log/build.binlog"
 
       - name: Upload packages
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: NuGet
-          path: artifacts/package/release
+          path: ${{ env.ARTIFACTS_DIR }}/package/release
           if-no-files-found: warn
 
       - name: Upload logs
@@ -82,14 +82,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logs
-          path: artifacts/log
+          path: ${{ env.ARTIFACTS_DIR }}/log
           if-no-files-found: warn
 
   sign:
     name: Sign
     runs-on: windows-latest
     needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/uno' || startsWith(github.ref, 'refs/heads/release/'))
     environment: PackageSign
     permissions:
       contents: read
@@ -102,7 +102,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: NuGet
-          path: artifacts
+          path: ${{ env.ARTIFACTS_DIR }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -123,7 +123,7 @@ jobs:
       - name: Sign artifacts
         shell: pwsh
         run: >-
-          ./sign code azure-key-vault artifacts/**/*.nupkg --publisher-name "uno.monaco-editor-uwp"
+          ./sign code azure-key-vault ${{ env.ARTIFACTS_DIR }}/**/*.nupkg --publisher-name "uno.monaco-editor-uwp"
           --description "Uno Monaco Editor UWP"
           --description-url "https://github.com/${{ github.repository }}"
           --azure-key-vault-managed-identity true
@@ -135,13 +135,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NuGet-Signed
-          path: artifacts
+          path: ${{ env.ARTIFACTS_DIR }}
 
   publish_dev:
     name: Publish Dev
     runs-on: ubuntu-latest
+    environment: Development
     needs: sign
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/uno'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -159,7 +160,7 @@ jobs:
   publish_release_uno:
     name: Publish Internal Feed
     runs-on: ubuntu-latest
-    environment: Stable
+    environment: Production
     needs: sign
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
     steps:
@@ -174,7 +175,7 @@ jobs:
   publish_release_nuget_org:
     name: Publish Production
     runs-on: ubuntu-latest
-    environment: Stable
+    environment: Production
     needs: publish_release_uno
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
     permissions:
