@@ -20,10 +20,22 @@ runs:
     with:
       dotnet-version: '9.0.x'
 
+  - name: Add Azure DevOps NuGet source
+    shell: pwsh
+    run: |
+        Push-Location $env:RUNNER_TEMP
+        dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json `
+            --name "AzureDevOps" `
+            --username "az" `
+            --password "${{ inputs.token }}" `
+            --store-password-in-clear-text
+        Pop-Location
+
   - name: Uno NuGet Feed Push
     shell: pwsh
     env:
-      FEED_ENDPOINT: https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json
-      NUGET_AUTH_TOKEN: ${{ inputs.token }}
+      ARTIFACTS_PATH: ${{ github.workspace }}/artifacts
     run: |
-        dotnet nuget push artifacts/*.nupkg --source $env:FEED_ENDPOINT --api-key AzureDevOps --skip-duplicate
+        Push-Location $env:RUNNER_TEMP
+        dotnet nuget push "$env:ARTIFACTS_PATH/*.nupkg" --source AzureDevOps --api-key az --skip-duplicate
+        Pop-Location
