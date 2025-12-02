@@ -106,8 +106,6 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
 
       - name: Install Sign CLI tool
         run: dotnet tool install --tool-path . sign --version 0.9.1-beta.25278.1
