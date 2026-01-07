@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Nito.AsyncEx" Version="5.1.2" />
-    <PackageVersion Include="Uno.CommunityToolkit.WinUI" Version="7.1.204" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Extensions" Version="8.2.251219" />
     <PackageVersion Include="Uno.WinUI" Version="6.4.185" />
     <PackageVersion Include="Uno.Core.Extensions.Logging" Version="4.1.1" />
     <PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="4.1.1" />
