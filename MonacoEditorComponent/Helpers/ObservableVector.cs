@@ -9,7 +9,12 @@ using Windows.Foundation.Collections;
 
 namespace Collections.Generic
 {
-	internal class ObservableVector<T> : Collection<T>, IObservableVector<T>, INotifyPropertyChanged
+	#if UNO
+	public
+	#else
+	internal
+	#endif
+	class ObservableVector<T> : Collection<T>, IObservableVector<T>, INotifyPropertyChanged
 	{
 		private const string IndexerName = "Item[]";
 
